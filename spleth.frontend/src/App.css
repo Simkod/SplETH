@@ -1,0 +1,116 @@
+.App {
+  text-align: center;
+}
+
+.App-header {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* font-size: calc(10px + 2vmin); */
+}
+
+.container {
+  margin: 20px;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 22px;
+  border-radius: 10px;
+  border: 2px solid #eee;
+}
+
+.container__title {
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.container__success {
+  margin: 10px;
+  border-radius: 6px;
+  background-color: aquamarine;
+}
+
+.container__warning {
+  margin: 10px;
+  border-radius: 6px;
+  background-color: sandybrown;
+}
+
+.container__error {
+  margin: 10px;
+  border-radius: 6px;
+  background-color: orangered;
+}
+
+.container__separator {
+  margin: 10px 0;
+  border: 1px solid #eee;
+}
+
+button {
+  outline: 0;
+  grid-gap: 8px;
+  align-items: center;
+  background: 0 0;
+  border: 1px solid #000;
+  border-radius: 4px;
+  cursor: pointer;
+  display: inline-flex;
+  flex-shrink: 0;
+  font-size: 16px;
+  gap: 8px;
+  justify-content: center;
+  line-height: 1.5;
+  overflow: hidden;
+  margin: 5px;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  transition: all .14s ease-out;
+  white-space: nowrap;
+}
+
+button:hover {
+  box-shadow: 4px 4px 0 #000;
+  transform: translate(-4px, -4px);
+}
+
+button:disabled {
+  box-shadow: none;
+  transform: none;
+}
+
+button:focus-visible {
+  outline-offset: 1px;
+}
+
+input[type=text] {
+  border-radius: 6px;
+  font-size: 16px;
+  background: #fbfbfb;
+  border: 2px solid transparent;
+  height: 24px;
+  padding: 2px 5px;
+  box-shadow: 0 0 0 1px #dddddd, 0 2px 4px 0 rgb(0 0 0 / 7%), 0 1px 1.5px 0 rgb(0 0 0 / 5%);
+}
+
+input[type=text]:focus,
+input[type=text]:focus-visible,
+input[type=text]:hover {
+  border: 2px solid #000;
+}
+
+textarea {
+  border-radius: 6px;
+  font-size: 16px;
+  background: #fbfbfb;
+  border: 2px solid transparent;
+  padding: 5px;
+  box-shadow: 0 0 0 1px #dddddd, 0 2px 4px 0 rgb(0 0 0 / 7%), 0 1px 1.5px 0 rgb(0 0 0 / 5%);
+}
+
+textarea:focus,
+textarea:focus-visible,
+textarea:hover {
+  border: 2px solid #000;
+}

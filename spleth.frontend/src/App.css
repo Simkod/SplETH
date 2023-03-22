@@ -23,23 +23,31 @@
   margin-bottom: 10px;
   font-size: 18px;
   font-weight: bold;
+  overflow-wrap: break-word;
 }
 
 .container__success {
-  margin: 10px;
+  margin: 10px 0;
+  padding: 5px;
   border-radius: 6px;
+  overflow-wrap: break-word;
   background-color: aquamarine;
 }
 
 .container__warning {
-  margin: 10px;
+  margin: 10px 0;
+  padding: 5px;
   border-radius: 6px;
+  overflow-wrap: break-word;
   background-color: sandybrown;
 }
 
 .container__error {
-  margin: 10px;
+  margin: 10px 0;
+  padding: 5px;
+  max-width: 32em;
   border-radius: 6px;
+  overflow-wrap: break-word;
   background-color: orangered;
 }
 
@@ -48,7 +56,8 @@
   border: 1px solid #eee;
 }
 
-button {
+button,
+.button {
   outline: 0;
   grid-gap: 8px;
   align-items: center;
@@ -64,23 +73,27 @@ button {
   line-height: 1.5;
   overflow: hidden;
   margin: 5px;
+  padding: 1px 6px;
   text-decoration: none;
   text-overflow: ellipsis;
   transition: all .14s ease-out;
   white-space: nowrap;
 }
 
-button:hover {
+button:hover,
+.button:hover {
   box-shadow: 4px 4px 0 #000;
   transform: translate(-4px, -4px);
 }
 
-button:disabled {
+button:disabled,
+.button:disabled {
   box-shadow: none;
   transform: none;
 }
 
-button:focus-visible {
+button:focus-visible,
+.button:focus-visible {
   outline-offset: 1px;
 }
 
@@ -90,6 +103,7 @@ input[type=text] {
   background: #fbfbfb;
   border: 2px solid transparent;
   height: 24px;
+  margin: 5px;
   padding: 2px 5px;
   box-shadow: 0 0 0 1px #dddddd, 0 2px 4px 0 rgb(0 0 0 / 7%), 0 1px 1.5px 0 rgb(0 0 0 / 5%);
 }

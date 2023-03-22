@@ -27,22 +27,30 @@ export default function AddUser() {
     });
 
     return (
-        <div>
-            <input type='text' value={newUserAddress} onChange={(e) => setNewUserAddress(e.target.value)} placeholder='Address' />
-            <button disabled={!write || isLoading} onClick={() => write?.()}>
-                {isLoading ? 'Adding User...' : 'addUser'}
-            </button>
-            {isSuccess && (
-                <div className='container__success'>
-                    Successfully added new user!
-                    <div>
-                        <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
+        <>
+            <div style={{ display: 'flex' }}>
+                <input
+                    type='text'
+                    value={newUserAddress}
+                    onChange={(e) => setNewUserAddress(state => e.target.value === '' || e.target.value.match(/^0x[a-fA-F0-9]{40}$/ig) ? e.target.value : state)}
+                    placeholder='Address'
+                    style={{ flexGrow: 1 }}
+                />
+                <button disabled={!write || isLoading} onClick={() => write?.()}>
+                    {isLoading ? 'Adding User...' : 'addUser'}
+                </button>
+                {isSuccess && (
+                    <div className='container__success'>
+                        Successfully added new user!
+                        <div>
+                            <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
+                        </div>
                     </div>
-                </div>
-            )}
-            {(isPrepareError || isError) && (
-                <div className='container__error'>Error: {(prepareError || error)?.message}</div>
-            )}
-        </div>
+                )}
+                {(isPrepareError || isError) && (
+                    <div className='container__error'>Error: {(prepareError || error)?.message}</div>
+                )}
+            </div>
+        </>
     )
 }

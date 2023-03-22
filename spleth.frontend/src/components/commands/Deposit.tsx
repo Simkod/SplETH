@@ -9,6 +9,7 @@ import {
 import { useAppSelector } from '../../app/hooks';
 import useDebounce from '../../hooks/useDebounce';
 import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { isNumeric } from '../../utils';
 
 export default function Deposit() {
     const contractAddress = useAppSelector(selectContractAddress);
@@ -40,30 +41,35 @@ export default function Deposit() {
     });
 
     return (
-        <div>
-            <input
-                type='text'
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder='0.05'
-                value={amount}
-            />
-            <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
-                {isLoading ? 'Sending...' : 'Deposit'}
-            </button>
-            {isSuccess && (
-                <div className='container__success'>
-                    Successfully sent {amount} matic to {contractAddress}
-                    <div>
-                        <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
+        <>
+            <div style={{ display: 'flex' }}>
+                <input
+                    type='text'
+                    onChange={(e) => setAmount(state => e.target.value === '' || isNumeric(e.target.value) ? e.target.value : state)}
+                    placeholder='Amount'
+                    value={amount}
+                    style={{ flexGrow: 1 }}
+                />
+                <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
+                    {isLoading ? 'Sending...' : 'Deposit'}
+                </button>
+            </div>
+            <div>
+                {isSuccess && (
+                    <div className='container__success'>
+                        Successfully sent {amount} matic to {contractAddress}
+                        <div>
+                            <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
+                        </div>
                     </div>
-                </div>
-            )}
-            {(isPrepareError || isError) && (
-                <div className='container__error' style={{ maxWidth: '40em' }}>
-                    Error: {(prepareError || error)?.message} <br />
-                    {(prepareError || error as any)?.data?.message}
-                </div>
-            )}
-        </div>
+                )}
+                {(isPrepareError || isError) && (
+                    <div className='container__error'>
+                        Error: {(prepareError || error)?.message} <br />
+                        {(prepareError || error as any)?.data?.message}
+                    </div>
+                )}
+            </div>
+        </>
     )
 }

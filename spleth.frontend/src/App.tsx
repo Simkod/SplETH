@@ -10,6 +10,8 @@ import Connector from './components/Connector';
 import ContractInfo from './components/ContractInfo';
 import Users from './components/commands/Users';
 import Balance from './components/commands/Balance';
+import Emoji from './components/shared/Emoji';
+import Spend from './components/commands/Spend';
 
 const { chains, provider, webSocketProvider } = configureChains(
   [polygonMumbai, polygon],
@@ -41,12 +43,17 @@ function App() {
         <div className='App'>
           <header className='App-header'>
             <div>
+              <div style={{ margin: '20px' }}>
+                <Emoji symbol='💰' size='60px' />
+                <h2 style={{ marginTop: '0px' }}>SplETH</h2>
+              </div>
               <Connector />
               {isConnected &&
                 <>
                   <ContractInfo />
-                  <Balance />
                   <Users />
+                  <Balance />
+                  <Spend />
                 </>
               }
             </div>

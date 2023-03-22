@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/spleth/static/css/main.685fb7d8.css",
-    "main.js": "/spleth/static/js/main.3d14102a.js",
+    "main.js": "/spleth/static/js/main.9600af7a.js",
     "static/js/787.523aa23b.chunk.js": "/spleth/static/js/787.523aa23b.chunk.js",
     "index.html": "/spleth/index.html",
     "main.685fb7d8.css.map": "/spleth/static/css/main.685fb7d8.css.map",
-    "main.3d14102a.js.map": "/spleth/static/js/main.3d14102a.js.map",
+    "main.9600af7a.js.map": "/spleth/static/js/main.9600af7a.js.map",
     "787.523aa23b.chunk.js.map": "/spleth/static/js/787.523aa23b.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.685fb7d8.css",
-    "static/js/main.3d14102a.js"
+    "static/js/main.9600af7a.js"
   ]
 }

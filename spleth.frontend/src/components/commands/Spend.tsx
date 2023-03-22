@@ -68,7 +68,7 @@ export default function Spend() {
                         <div>
                             <a
                                 href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}
-                                style={{ margin: '10px', textDecoration: 'none' }}
+                                style={{ margin: '10px' }}
                                 title='Open mumbai.polygonscan.com'
                                 className='button'
                                 target='_blank'

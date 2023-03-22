@@ -15,7 +15,7 @@ export default function Deposit() {
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
 
-    const [amount, setAmount] = useState('0.05');
+    const [amount, setAmount] = useState('');
     const [debouncedAmount] = useDebounce(amount);
 
     const { address } = useAccount();

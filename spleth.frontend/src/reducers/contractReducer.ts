@@ -1,19 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Contract } from 'ethers';
 import { AppThunk, RootState } from '../app/store';
 import _abi from '../contract.abi.json';
 
 export interface ContractState {
   contractAddress: `0x${string}` | undefined;
   contractABI: any[];
-  contract: Contract | null;
   status: 'idle' | 'loading' | 'failed';
-}
+};
 
 const initialState: ContractState = {
   contractAddress: '0x7C7914475625D4DD5816292b3292E59636bf88a5',
   contractABI: _abi,
-  contract: null,
   status: 'idle',
 };
 
@@ -36,23 +33,6 @@ export const contractSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    /*increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
-    },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    // Use the PayloadAction type to declare the contents of `action.payload`
-    incrementByAmount: (state, action: PayloadAction<number>) => {
-      state.value += action.payload;
-    },*/
-    // setContract: (state, action: PayloadAction<Contract>) => {
-    //   state.contract = action.payload;
-    // },
     setContractAddress: (state, action: PayloadAction<`0x${string}` | undefined>) => {
       state.contractAddress = action.payload;
     },
@@ -77,7 +57,7 @@ export const contractSlice = createSlice({
   // },
 });
 
-export const { /*increment, decrement, incrementByAmount,*/
+export const {
   setContractAddress: setContractAddressAction,
   setContractABI: setContractABIAction
 } = contractSlice.actions;

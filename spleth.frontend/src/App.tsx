@@ -12,6 +12,7 @@ import Users from './components/commands/Users';
 import Balance from './components/commands/Balance';
 import Emoji from './components/shared/Emoji';
 import Spend from './components/commands/Spend';
+import Withdraw from './components/commands/Withdraw';
 
 const { chains, provider, webSocketProvider } = configureChains(
   [polygonMumbai, polygon],
@@ -54,6 +55,7 @@ function App() {
                   <Users />
                   <Balance />
                   <Spend />
+                  <Withdraw />
                 </>
               }
             </div>

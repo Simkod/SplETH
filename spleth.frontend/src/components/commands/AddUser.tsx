@@ -7,8 +7,10 @@ import { selectContractABI, selectContractAddress } from '../../reducers/contrac
 export default function AddUser() {
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
+
     const [newUserAddress, setNewUserAddress] = useState('');
     const debouncedUserAddress = useDebounce(newUserAddress);
+
     const {
         config,
         error: prepareError,

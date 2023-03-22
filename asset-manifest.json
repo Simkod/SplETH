@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/spleth/static/css/main.6937b3cc.css",
+    "main.js": "/spleth/static/js/main.8119b924.js",
+    "static/js/787.523aa23b.chunk.js": "/spleth/static/js/787.523aa23b.chunk.js",
+    "index.html": "/spleth/index.html",
+    "main.6937b3cc.css.map": "/spleth/static/css/main.6937b3cc.css.map",
+    "main.8119b924.js.map": "/spleth/static/js/main.8119b924.js.map",
+    "787.523aa23b.chunk.js.map": "/spleth/static/js/787.523aa23b.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6937b3cc.css",
+    "static/js/main.8119b924.js"
+  ]
+}

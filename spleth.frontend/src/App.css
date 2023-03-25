@@ -1,13 +1,30 @@
-.App {
+.app {
   text-align: center;
+  min-height: 100vh;
 }
 
-.App-header {
-  min-height: 100vh;
+.app__header {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* font-size: calc(10px + 2vmin); */
+  margin: 20px 40px 0;
+}
+
+.app__header--disconnected {
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app_logo {
+  flex-grow: 1;
+  display: flex;
+  align-items: baseline;
+}
+
+.app__header--disconnected .app_logo {
+  display: initial;
+  flex-grow: initial;
+  /* margin-bottom: 20px; */
 }
 
 .container {

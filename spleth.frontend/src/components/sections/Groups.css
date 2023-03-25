@@ -1,0 +1,23 @@
+.groups {
+    margin-top: 10px;
+}
+
+.groups__items {
+    display: flex;
+    flex-direction: column;
+}
+
+.groups__item {
+    padding: 15px;
+    margin: 10px 0;
+}
+
+/* .groups__item:hover {
+    background-color: #e0e0e0;
+} */
+
+.groups__item--selected {
+    background-color: #eee;
+    box-shadow: 4px 4px 0 #000;
+    transform: translate(-4px, -4px);
+}

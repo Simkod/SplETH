@@ -7,6 +7,7 @@ import {
     useNetwork,
 } from 'wagmi';
 import { polygon, polygonMumbai } from 'wagmi/chains';
+import truncateEthAddress from '../utils/address';
 
 export default function Connector() {
     const { address, connector, isConnected } = useAccount();
@@ -18,33 +19,28 @@ export default function Connector() {
 
     if (isConnected) {
         return (
-            <div className='container'>
-                <div className='container__title'>Wallet</div>
+            <>
                 {/* <img src={ensAvatar ?? undefined} alt='ENS Avatar' />
                 <div>{ensName ? `${ensName} (${address})` : address}</div> */}
-                <div>My address - {address}</div>
-                <div>Connected to {connector?.name}</div>
-                <div>{chain?.id} - {chain?.name}</div>
-                <button onClick={() => disconnect()}>Disconnect</button>
+                <button onClick={() => disconnect()}>Disconnect {truncateEthAddress(address?.toString())}</button>
 
-                {(chain?.id !== polygonMumbai.id) && <div className='container__warning'>
+                {chain?.id !== polygonMumbai.id && <div className='container__warning'>
                     The selected network is not supported.<br />
                     Please, choose <b>{polygonMumbai.name}</b>
                 </div>}
-            </div>
+            </>
         )
     }
 
     return (
-        <div className='container'>
-            <div className='container__title'>Wallet</div>
+        <>
             {connectors.map((connector) => (
                 <button
                     disabled={!connector.ready}
                     key={connector.id}
                     onClick={() => connect({ connector })}
                 >
-                    {connector.name}
+                    Connect {/* {connector.name} */}
                     {!connector.ready && ' (unsupported)'}
                     {isLoading &&
                         connector.id === pendingConnector?.id &&
@@ -53,6 +49,6 @@ export default function Connector() {
             ))}
 
             {error && <div>{error.message}</div>}
-        </div>
+        </>
     )
 }

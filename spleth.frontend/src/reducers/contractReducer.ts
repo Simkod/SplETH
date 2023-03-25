@@ -1,15 +1,20 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppThunk, RootState } from '../app/store';
+import _abiFactory from '../contractFactory.abi.json';
 import _abi from '../contract.abi.json';
 
 export interface ContractState {
+  contractFactoryAddress: `0x${string}`;
+  contractFactoryABI: any[];
   contractAddress: `0x${string}` | undefined;
   contractABI: any[];
   status: 'idle' | 'loading' | 'failed';
 };
 
 const initialState: ContractState = {
-  contractAddress: '0x7C7914475625D4DD5816292b3292E59636bf88a5',
+  contractFactoryAddress: '0xF6534102f56cEa30F7F7A54FdcA908e6E88ea1e7',
+  contractFactoryABI: _abiFactory,
+  contractAddress: undefined,
   contractABI: _abi,
   status: 'idle',
 };
@@ -65,6 +70,8 @@ export const {
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.contract.value)`
+export const selectContractFactoryAddress = (state: RootState) => state.contract.contractFactoryAddress;
+export const selectContractFactoryABI = (state: RootState) => state.contract.contractFactoryABI;
 export const selectContractAddress = (state: RootState) => state.contract.contractAddress;
 export const selectContractABI = (state: RootState) => state.contract.contractABI;
 

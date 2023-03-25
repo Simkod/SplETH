@@ -76,7 +76,13 @@
         "type": "function"
     },
     {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_myAddress",
+                "type": "address"
+            }
+        ],
         "name": "getBalance",
         "outputs": [
             {
@@ -125,11 +131,40 @@
                 "internalType": "address payable",
                 "name": "recipient",
                 "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "information",
+                "type": "string"
             }
         ],
         "name": "spend",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "transaction_details",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {

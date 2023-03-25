@@ -1,0 +1,36 @@
+.dashboard {}
+
+.dashboard__header {
+    display: flex;
+    align-items: baseline;
+}
+
+.dashboard__header-title {
+    font-size: 18px;
+    font-weight: bold;
+    overflow-wrap: break-word;
+    flex-grow: 1;
+    text-align: left;
+}
+
+.dashboard__pin {
+    margin: 10px;
+    padding: 10px 20px;
+
+    border-radius: 20px;
+    border: 1px solid #eeeeeeb0;
+}
+
+.dashboard__pin--colored {
+    color: white;
+    background: rgb(253, 177, 11);
+    background: linear-gradient(243deg, rgba(253, 177, 11, 0.8) 0%, rgba(253, 41, 48, 0.8) 100%);
+}
+
+.dashboard__pin-title {
+    font-size: 12px;
+}
+
+.dashboard__pin-balance {
+    font-weight: bold;
+}

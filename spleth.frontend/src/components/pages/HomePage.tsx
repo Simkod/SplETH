@@ -1,11 +1,9 @@
 import { useAppSelector } from '../../app/hooks'
 import { selectContractAddress } from '../../reducers/contractReducer'
-import Balance from '../commands/Balance'
 import Spend from '../commands/Spend'
 import Transactions from '../commands/Transactions'
-import Users from '../commands/Users'
 import Withdraw from '../commands/Withdraw'
-import ContractInfo from '../ContractInfo'
+import Dashboard from '../sections/Dashboard'
 import Groups from '../sections/Groups'
 import './HomePage.css';
 
@@ -27,9 +25,8 @@ export default function HomePage() {
                     }
                     {selectedContractAddress &&
                         <>
-                            <ContractInfo />
-                            <Users />
-                            <Balance />
+                            <Dashboard />
+
                             <Spend />
                             <Withdraw />
                             {/* <Transactions /> */}

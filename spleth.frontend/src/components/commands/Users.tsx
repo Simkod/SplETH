@@ -1,51 +1,54 @@
 import { useState } from 'react';
-import { useContractRead } from 'wagmi';
+import { useContractRead, useAccount } from 'wagmi';
 import { useAppSelector } from '../../app/hooks';
 import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import truncateEthAddress from '../../utils/address';
+import Loader from '../shared/Loader';
 import AddUser from './AddUser';
+import './Users.css';
 
 export default function Users() {
-  const contractAddress = useAppSelector(selectContractAddress);
-  const contractABI = useAppSelector(selectContractABI);
+    const contractAddress = useAppSelector(selectContractAddress);
+    const contractABI = useAppSelector(selectContractABI);
 
-  const [users, setUsers] = useState<any[]>([]);
-  const { error, isFetching: getAllUsersIsFetching, isFetched: getAllUsersIsFetched, refetch } = useContractRead({
-    enabled: false,
-    address: contractAddress,
-    abi: contractABI,
-    functionName: 'getAllUsers',
-    onError: (error) => console.error('getAllUsers', error),
-  });
+    const [users, setUsers] = useState<any[]>([]);
 
-  const onGetAllUsersClick = async () => {
-    const response = await refetch();
-    setUsers(response.data as any[]);
-  };
+    const { address } = useAccount();
+    const { error, isFetching: getAllUsersIsFetching, isFetched: getAllUsersIsFetched } = useContractRead({
+        address: contractAddress,
+        abi: contractABI,
+        functionName: 'getAllUsers',
+        onError: (error) => console.error('getAllUsers', error),
+        onSuccess: (data: any[]) => setUsers(data as any[])
+    });
 
-  return (
-    <div className='container'>
-      <div className='container__title'>Users</div>
-      <div>
-        <button onClick={onGetAllUsersClick} disabled={getAllUsersIsFetching}>
-          {getAllUsersIsFetching ? 'Getting all users...' : 'getAllUsers'}
-        </button>
-        {error &&
-          <div className='container__error'>
-            {error.message}
-          </div>}
-        {getAllUsersIsFetched && users.length === 0 &&
-          <div className='container__warning'>User list is empty</div>
-        }
-        <ul>
-          {users.map(user =>
-            <li key={user}>{user}</li>
-          )}
-        </ul>
-      </div>
-      <div className='container__separator'></div>
-      <div>
-        <AddUser />
-      </div>
-    </div>
-  )
+    return (
+        <div className='users'>
+            {getAllUsersIsFetching && <Loader />}
+            {getAllUsersIsFetched &&
+                <>
+                    <div className='users__title'>
+                        {users.length ? `${users.length} Members` : 'Member list is empty'}
+                    </div>
+
+                    <div className='users__list'>
+                        {users.map(user =>
+                            <div className='users__list-item' key={user}>
+                                <img className='users__avatar' src={`https://effigy.im/a/${user}.png`}></img>
+                                {address === user && <span style={{ marginRight: '10px' }}>You</span>}
+                                <span className='users__list-item-adress--hidden'>{user}</span>
+                                <span className='users__list-item-adress'>{truncateEthAddress(user)}</span>
+                            </div>
+                        )}
+                    </div>
+
+                    {error &&
+                        <div className='container__error'>
+                            {error.message}
+                        </div>}
+                </>}
+
+            <AddUser />
+        </div>
+    )
 }

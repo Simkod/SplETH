@@ -1,0 +1,36 @@
+.users {
+    margin-top: 10px;
+}
+
+.users__title {
+    text-align: left;
+    font-weight: bold;
+}
+
+.users__list {
+    text-align: left;
+}
+
+.users__list-item {
+    align-items: center;
+    display: flex;
+    margin: 10px 0;
+}
+
+.users__list-item:hover .users__list-item-adress {
+    display: none;
+}
+
+.users__list-item:hover .users__list-item-adress--hidden {
+    display: inline-block;
+}
+
+.users__list-item-adress--hidden {
+    display: none;
+}
+
+.users__avatar {
+    width: 30px;
+    border-radius: 15px;
+    margin-right: 10px;
+}

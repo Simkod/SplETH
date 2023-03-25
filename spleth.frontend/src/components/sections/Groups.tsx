@@ -24,7 +24,9 @@ export default function Groups() {
         address: contractAddressFactory,
         abi: contractFactoryABI,
         functionName: 'getAllAddresses',
-        onError: (error) => console.error('getBalance', error),
+        onError: (error) => { 
+            setMyGroups([]);
+        },
         onSuccess: (data: string[]) => {
             loadGroupUsers(data);
         }

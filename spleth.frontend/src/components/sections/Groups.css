@@ -17,7 +17,7 @@
 } */
 
 .groups__item--selected {
-    background-color: #eee;
+    background-color: #e9e7ed;
     box-shadow: 4px 4px 0 #000;
     transform: translate(-4px, -4px);
 }

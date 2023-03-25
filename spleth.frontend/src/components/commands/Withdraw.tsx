@@ -3,6 +3,7 @@ import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from
 import { useAppSelector } from '../../app/hooks';
 import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
+import Deposit from './Deposit';
 
 export default function Withdraw() {
     const contractAddress = useAppSelector(selectContractAddress);
@@ -61,6 +62,8 @@ export default function Withdraw() {
                     </div>
                 )}
             </div>
+
+            <Deposit />
         </div>
     )
 }

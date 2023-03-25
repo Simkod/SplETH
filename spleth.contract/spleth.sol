@@ -102,11 +102,7 @@ abstract contract Ownable is Context {
 interface ISplitFundsContract {
     function deposit() external payable;
 
-    function spend(uint256 amount, address payable recipient) external;
-
     function withdraw() external;
-
-    function getBalance() external view returns (uint256);
 }
 
 contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
@@ -121,8 +117,12 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
     uint256 public number;
 
     mapping(address => User) public users;
+    mapping(address => mapping(uint256 => string)) public transaction_details;
 
     constructor(address[] memory initialUsers) {
+        users[msg.sender] = User({balance: 0, exists: true});
+        userAddresses.push(msg.sender);
+
         for (uint256 i = 0; i < initialUsers.length; i++) {
             users[initialUsers[i]] = User({balance: 0, exists: true});
             userAddresses.push(initialUsers[i]);
@@ -149,10 +149,13 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
 
     function spend(
         uint256 amount,
-        address payable recipient
-    ) external override onlyAuthorized {
+        address payable recipient,
+        string calldata information
+    ) external onlyAuthorized {
         require(amount > 0, "Amount must be greater than zero");
         require(amount <= balance, "Insufficient funds");
+
+        transaction_details[recipient][amount] = information;
 
         uint256 numUsers = userAddresses.length;
         uint256 amountPerUser = amount / numUsers;
@@ -177,8 +180,8 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
         payable(msg.sender).transfer(amount);
     }
 
-    function getBalance() external view override returns (uint256) {
-        return users[msg.sender].balance;
+    function getBalance(address _myAddress) external view returns (uint256) {
+        return users[_myAddress].balance;
     }
 
     function getAllUsers() external view returns (address[] memory) {
@@ -187,15 +190,22 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
 }
 
 contract SplitFundsContractFactory {
-    address public contractAddr;
+    mapping(string => address) public contractAddr;
+    address[] public allAddresses;
 
     function createContract(
-        address[] memory addresses
+        address[] memory addresses,
+        string calldata title
     ) external returns (address) {
         SplitFundsContractImpl newContract = new SplitFundsContractImpl(
             addresses
         );
-        contractAddr = address(newContract);
-        return contractAddr;
+        contractAddr[title] = address(newContract);
+        allAddresses.push(address(newContract));
+        return contractAddr[title];
+    }
+
+    function getAllAddresses() public view returns (address[] memory) {
+        return allAddresses;
     }
 }

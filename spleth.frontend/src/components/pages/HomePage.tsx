@@ -10,31 +10,33 @@ import Groups from '../sections/Groups'
 import './HomePage.css';
 
 export default function HomePage() {
-    const storeContractAddress = useAppSelector(selectContractAddress);
+    const selectedContractAddress = useAppSelector(selectContractAddress);
 
     return (
-        <div className='home'>
+        <div className={`home ${selectedContractAddress ? 'home--selected-address' : ''}`}>
             <div className='home__groups container'>
                 <div className='container__title'>Groups</div>
                 <Groups />
             </div>
-            <div className='home__group'>
-                {!storeContractAddress &&
-                    <div>
+            {selectedContractAddress &&
+                <div className='home__group'>
+                    {!selectedContractAddress &&
+                        <div>
 
-                    </div>
-                }
-                {storeContractAddress &&
-                    <>
-                        <ContractInfo />
-                        <Users />
-                        <Balance />
-                        <Spend />
-                        <Withdraw />
-                        {/* <Transactions /> */}
-                    </>
-                }
-            </div>
+                        </div>
+                    }
+                    {selectedContractAddress &&
+                        <>
+                            <ContractInfo />
+                            <Users />
+                            <Balance />
+                            <Spend />
+                            <Withdraw />
+                            {/* <Transactions /> */}
+                        </>
+                    }
+                </div>
+            }
         </div>
     )
 }

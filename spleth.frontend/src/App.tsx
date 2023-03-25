@@ -47,7 +47,7 @@ function App() {
               <Connector />
             </div>
           </header>
-          <div>
+          <div className='app__content'>
             {isConnected &&
               <HomePage />
             }

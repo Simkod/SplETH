@@ -5,6 +5,11 @@
                 "internalType": "address[]",
                 "name": "initialUsers",
                 "type": "address[]"
+            },
+            {
+                "internalType": "string",
+                "name": "title",
+                "type": "string"
             }
         ],
         "stateMutability": "nonpayable",
@@ -141,6 +146,19 @@
         "name": "spend",
         "outputs": [],
         "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "titleWallet",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {

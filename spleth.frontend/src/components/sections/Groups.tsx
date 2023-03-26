@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { readContracts, useAccount, useContractRead } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, selectContractFactoryABI, selectContractFactoryAddress, selectNeedFetchGroups, setContractAddressAction, setNeedFetchGroupsAction } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, selectContractFactoryABI, selectContractFactoryAddress, selectNeedFetchGroups, setContractAddressAction, setContractAddressTitleAction, setNeedFetchGroupsAction } from '../../reducers/contractReducer';
 import Loader from '../shared/Loader';
 import './Groups.css';
 
 export default function Groups() {
     const dispatch = useAppDispatch();
     const needFetchGroups = useAppSelector(selectNeedFetchGroups);
-    const selectedGroup = useAppSelector(selectContractAddress);
+    const selectedContractAddress = useAppSelector(selectContractAddress);
 
     const [isFetchingGetAllUsers, setIsFetchingGetAllUsers] = useState<boolean>(false);
-    const [myGroups, setMyGroups] = useState<string[]>([]);
+    const [myGroups, setMyGroups] = useState<{ title: string, address: string }[]>([]);
 
     const { address: currentWalletAddress } = useAccount();
 
@@ -46,12 +46,32 @@ export default function Groups() {
                 })
             });
 
-            const _myGroups: string[] = [];
+            const _myGroupAddresses: string[] = [];
             (response as [string[]]).forEach((groupUsers, index) => {
                 if (currentWalletAddress && groupUsers.includes(currentWalletAddress)) {
-                    _myGroups.push(factoryChildAddresses[index]);
+                    _myGroupAddresses.push(factoryChildAddresses[index]);
                 }
             });
+
+            // get titles
+            const responseTitles = await readContracts({
+                contracts: _myGroupAddresses.map(address => {
+                    return {
+                        address: address,
+                        abi: contractABI,
+                        functionName: 'titleWallet'
+                    } as any;
+                })
+            });
+
+            const _myGroups: { title: string, address: string }[] = [];
+            (responseTitles as string[]).forEach((title, index) => {
+                _myGroups.push({
+                    address: _myGroupAddresses[index],
+                    title: title
+                });
+            });
+
             setMyGroups(_myGroups);
         } catch (error) {
 
@@ -59,8 +79,9 @@ export default function Groups() {
         setIsFetchingGetAllUsers(false);
     }
 
-    const onSelectGroupClick = (contractAddress: string) => {
-        dispatch(setContractAddressAction(contractAddress as `0x${string}`));
+    const onSelectGroupClick = (group: { title: string, address: string }) => {
+        dispatch(setContractAddressAction(group.address as `0x${string}`));
+        dispatch(setContractAddressTitleAction(group.title));
     }
 
     useEffect(() => {
@@ -78,7 +99,7 @@ export default function Groups() {
         <div className='groups'>
             <div className='groups__items'>
                 <div
-                    className={`groups__item button ${selectedGroup === null ? 'groups__item--selected' : ''}`}
+                    className={`groups__item button ${selectedContractAddress === null ? 'groups__item--selected' : ''}`}
                     onClick={() => dispatch(setContractAddressAction(null))}
                 >
                     Add new group
@@ -86,11 +107,11 @@ export default function Groups() {
 
                 {myGroups.map(group =>
                     <div
-                        key={group}
-                        className={`groups__item button ${selectedGroup === group ? 'groups__item--selected' : ''}`}
+                        key={group.address}
+                        className={`groups__item button ${selectedContractAddress === group.address ? 'groups__item--selected' : ''}`}
                         onClick={() => onSelectGroupClick(group)}
                     >
-                        {group}
+                        {group.title}
                     </div>
                 )}
             </div>

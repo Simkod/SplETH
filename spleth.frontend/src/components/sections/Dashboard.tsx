@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useAccount, useBalance, useContractRead } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, selectNeedFetchBalance, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, selectContractAddressTitle, selectNeedFetchBalance, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import Users from '../commands/Users';
 import Emoji from '../shared/Emoji';
 import Loader from '../shared/Loader';
@@ -10,6 +10,7 @@ import './Dashboard.css';
 
 export default function Dashboard() {
     const dispatch = useAppDispatch();
+    const selectedContractAddressTitle = useAppSelector(selectContractAddressTitle);
     const selectedContractAddress = useAppSelector(selectContractAddress);
     const selectedContractABI = useAppSelector(selectContractABI);
     const needFetchBalance = useAppSelector(selectNeedFetchBalance);
@@ -43,7 +44,7 @@ export default function Dashboard() {
         <div className='container'>
             <div className='dashboard__header'>
                 <div className='dashboard__header-title'>
-                    Trip title
+                    {selectedContractAddressTitle}
                     <a
                         href={`https://mumbai.polygonscan.com/address/${selectedContractAddress}`}
                         style={{ margin: '0 10px' }}

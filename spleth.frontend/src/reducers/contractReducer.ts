@@ -6,6 +6,7 @@ import _abi from '../contract.abi.json';
 export interface ContractState {
   contractFactoryAddress: `0x${string}`;
   contractFactoryABI: any[];
+  contractAddressTitle: string | undefined,
   contractAddress: `0x${string}` | undefined | null;
   contractABI: any[];
 
@@ -15,8 +16,9 @@ export interface ContractState {
 };
 
 const initialState: ContractState = {
-  contractFactoryAddress: '0xF6534102f56cEa30F7F7A54FdcA908e6E88ea1e7',
+  contractFactoryAddress: '0x7EFe35E3A26D4F83C54a7372962C23E6B511aF24',
   contractFactoryABI: _abiFactory,
+  contractAddressTitle: undefined,
   contractAddress: undefined,
   contractABI: _abi,
 
@@ -44,6 +46,9 @@ export const contractSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
+    setContractAddressTitle: (state, action: PayloadAction<string | undefined>) => {
+      state.contractAddressTitle = action.payload;
+    },
     setContractAddress: (state, action: PayloadAction<`0x${string}` | undefined | null>) => {
       state.contractAddress = action.payload;
     },
@@ -75,6 +80,7 @@ export const contractSlice = createSlice({
 });
 
 export const {
+  setContractAddressTitle: setContractAddressTitleAction,
   setContractAddress: setContractAddressAction,
   setContractABI: setContractABIAction,
   setNeedFetchGroups: setNeedFetchGroupsAction,
@@ -86,6 +92,7 @@ export const {
 // in the slice file. For example: `useSelector((state: RootState) => state.contract.value)`
 export const selectContractFactoryAddress = (state: RootState) => state.contract.contractFactoryAddress;
 export const selectContractFactoryABI = (state: RootState) => state.contract.contractFactoryABI;
+export const selectContractAddressTitle = (state: RootState) => state.contract.contractAddressTitle;
 export const selectContractAddress = (state: RootState) => state.contract.contractAddress;
 export const selectContractABI = (state: RootState) => state.contract.contractABI;
 

@@ -35,7 +35,7 @@ export default function HomePage() {
                             </div>
                             <div style={{ flexGrow: '1' }}>
                                 <Deposit />
-                                {isOwner && <Withdraw />}
+                                <Withdraw />
                             </div>
                         </div>
 

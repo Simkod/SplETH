@@ -80,17 +80,14 @@ export default function Spend() {
                 {isSuccess && (
                     <div className='container__success'>
                         Successfully spended!
-                        <div>
-                            <a
-                                href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}
-                                style={{ margin: '10px' }}
-                                title='Open mumbai.polygonscan.com'
-                                className='button'
-                                target='_blank'
-                            >
-                                <Emoji symbol='🔗' /> mumbai.polygonscan.com
-                            </a>
-                        </div>
+                        <a
+                            href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}
+                            title='Open mumbai.polygonscan.com'
+                            className='button'
+                            target='_blank'
+                        >
+                            <Emoji symbol='🔗' />
+                        </a>
                     </div>
                 )}
                 {(isPrepareError || isError) && (

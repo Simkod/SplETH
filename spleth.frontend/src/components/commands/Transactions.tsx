@@ -1,17 +1,21 @@
 import { AssetTransfersCategory, AssetTransfersResult } from 'alchemy-sdk';
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, selectNeedFetchBalance } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
+import Loader from '../shared/Loader';
 
 export default function Transactions() {
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
+    const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
+    const [isFetchingTransfers, setIsFetchingTransfers] = useState<boolean>(false);
     const [transactions, setTransactions] = useState<AssetTransfersResult[]>([]);
 
     useEffect(() => {
         async function getTransactions() {
+            setIsFetchingTransfers(true);
             try {
                 const data = await window.alchemy.core.getAssetTransfers({
                     //fromBlock: "0x0",
@@ -25,17 +29,20 @@ export default function Transactions() {
             } catch (error) {
                 console.error('alchemy.core.getAssetTransfers', error);
             }
+            setIsFetchingTransfers(false);
         };
 
-        if (!transactions.length) {
-            getTransactions();
-        }
-    }, [contractAddress]);
+        getTransactions();
+    }, [contractAddress, needFetchBalance]);
 
     return (
         <div className='container'>
             <div className='container__title'>Transactions</div>
-            <div>
+            {isFetchingTransfers && <Loader />}
+            {!isFetchingTransfers && <div>
+                {!transactions.length && <div>
+                    Empty
+                </div>}
                 {transactions.map(transaction =>
                     <div key={transaction.uniqueId} style={{ fontSize: '12px', display: 'flex', margin: '10px 0' }}>
                         <div style={{ flexGrow: 1 }}>
@@ -56,6 +63,7 @@ export default function Transactions() {
                     </div>
                 )}
             </div>
+            }
         </div>
     )
 }

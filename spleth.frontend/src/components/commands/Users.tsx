@@ -1,26 +1,35 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useContractRead, useAccount } from 'wagmi';
-import { useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectContractABI, selectContractAddress, selectNeedFetchUsers, setNeedFetchUsersAction } from '../../reducers/contractReducer';
 import truncateEthAddress from '../../utils/address';
 import Loader from '../shared/Loader';
 import AddUser from './AddUser';
 import './Users.css';
 
 export default function Users() {
+    const dispatch = useAppDispatch();
+    const needFetchUsers = useAppSelector(selectNeedFetchUsers);
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
 
     const [users, setUsers] = useState<any[]>([]);
 
     const { address } = useAccount();
-    const { error, isFetching: getAllUsersIsFetching, isFetched: getAllUsersIsFetched } = useContractRead({
+    const { error, isFetching: getAllUsersIsFetching, isFetched: getAllUsersIsFetched, refetch: refetchGetAllUsers } = useContractRead({
         address: contractAddress as any,
         abi: contractABI,
         functionName: 'getAllUsers',
         onError: (error) => console.error('getAllUsers', error),
         onSuccess: (data: any[]) => setUsers(data as any[])
     });
+
+    useEffect(() => {
+        if (needFetchUsers) {
+            refetchGetAllUsers();
+            dispatch(setNeedFetchUsersAction(false));
+        }
+    }, [needFetchUsers]);
 
     return (
         <div className='users'>

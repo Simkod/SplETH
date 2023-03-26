@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import useDebounce from '../../hooks/useDebounce';
-import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, setNeedFetchUsersAction } from '../../reducers/contractReducer';
+import Emoji from '../shared/Emoji';
 
 export default function AddUser() {
+    const dispatch = useAppDispatch();
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
 
@@ -26,6 +28,10 @@ export default function AddUser() {
     const { data, error, isError, write } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
+        onSuccess(data) {
+            setNewUserAddress('');
+            dispatch(setNeedFetchUsersAction(true));
+        },
     });
 
     return (
@@ -41,12 +47,12 @@ export default function AddUser() {
                 <button disabled={!write || isLoading} onClick={() => write?.()}>
                     {isLoading ? 'Adding User...' : 'Add User'}
                 </button>
+            </div>
+            <div>
                 {isSuccess && (
                     <div className='container__success'>
                         Successfully added new user!
-                        <div>
-                            <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
-                        </div>
+                        <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
                     </div>
                 )}
                 {(isPrepareError || isError) && (

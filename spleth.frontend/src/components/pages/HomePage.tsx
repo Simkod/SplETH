@@ -1,5 +1,5 @@
 import { useAppSelector } from '../../app/hooks'
-import { selectContractAddress } from '../../reducers/contractReducer'
+import { selectContractAddress, selectIsOwner } from '../../reducers/contractReducer'
 import Deposit from '../commands/Deposit'
 import Spend from '../commands/Spend'
 import Transactions from '../commands/Transactions'
@@ -11,6 +11,7 @@ import './HomePage.css';
 
 export default function HomePage() {
     const selectedContractAddress = useAppSelector(selectContractAddress);
+    const isOwner = useAppSelector(selectIsOwner);
 
     return (
         <div className={`home ${selectedContractAddress !== undefined ? 'home--selected-address' : ''}`}>
@@ -34,7 +35,7 @@ export default function HomePage() {
                             </div>
                             <div style={{ flexGrow: '1' }}>
                                 <Deposit />
-                                <Withdraw />
+                                {isOwner && <Withdraw />}
                             </div>
                         </div>
 

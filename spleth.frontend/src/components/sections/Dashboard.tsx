@@ -2,7 +2,8 @@ import { BigNumber, ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useAccount, useBalance, useContractRead } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, selectContractAddressTitle, selectNeedFetchBalance, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, selectContractAddressTitle, selectNeedFetchBalance, setIsOwnerAction, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import truncateEthAddress from '../../utils/address';
 import Users from '../commands/Users';
 import Emoji from '../shared/Emoji';
 import Loader from '../shared/Loader';
@@ -16,6 +17,7 @@ export default function Dashboard() {
     const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
     const [balance, setBalance] = useState<string>('');
+    const [owner, setOwner] = useState<string>('');
 
     const { data: balanceData, isError: balanceIsError, error: balanceError, isLoading: balanceIsLoading, refetch: contractBalanceRefetch } = useBalance({
         address: selectedContractAddress as any,
@@ -29,6 +31,20 @@ export default function Dashboard() {
         args: [address],
         onError: (error) => setBalance('***'),
         onSuccess: (data: BigNumber) => setBalance(ethers.utils.formatUnits(data))
+    });
+
+    const { error: ownerError, isFetching: ownerIsFetching, isFetched: ownerIsFetched, refetch: ownerRefetch } = useContractRead({
+        address: selectedContractAddress as any,
+        abi: selectedContractABI,
+        functionName: 'owner',
+        onError: (error) => {
+            setOwner('');
+            dispatch(setIsOwnerAction(false));
+        },
+        onSuccess: (data: string) => {
+            setOwner(data);
+            dispatch(setIsOwnerAction(data === address));
+        }
     });
 
     useEffect(() => {
@@ -54,6 +70,10 @@ export default function Dashboard() {
                     >
                         <Emoji symbol='🔗' />
                     </a>
+                </div>
+                <div className='dashboard__pin'>
+                    <div className='dashboard__pin-title'>Owner</div>
+                    <div className='dashboard__pin-balance'>{owner === address ? 'You' : truncateEthAddress(owner)}</div>
                 </div>
                 <div className='dashboard__pin'>
                     {userContractBalanceIsFetching && <Loader />}

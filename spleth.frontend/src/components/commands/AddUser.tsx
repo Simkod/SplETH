@@ -2,13 +2,14 @@ import { useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import useDebounce from '../../hooks/useDebounce';
-import { selectContractABI, selectContractAddress, setNeedFetchUsersAction } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, selectIsOwner, setNeedFetchUsersAction } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 
 export default function AddUser() {
     const dispatch = useAppDispatch();
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
+    const isOwner = useAppSelector(selectIsOwner);
 
     const [newUserAddress, setNewUserAddress] = useState('');
     const debouncedUserAddress = useDebounce(newUserAddress);
@@ -36,29 +37,33 @@ export default function AddUser() {
 
     return (
         <>
-            <div style={{ display: 'flex' }}>
-                <input
-                    type='text'
-                    value={newUserAddress}
-                    onChange={(e) => setNewUserAddress(state => e.target.value === '' || e.target.value.match(/^0x[a-fA-F0-9]{40}$/ig) ? e.target.value : state)}
-                    placeholder='Address'
-                    style={{ flexGrow: 1 }}
-                />
-                <button disabled={!write || isLoading} onClick={() => write?.()}>
-                    {isLoading ? 'Adding User...' : 'Add User'}
-                </button>
-            </div>
-            <div>
-                {isSuccess && (
-                    <div className='container__success'>
-                        Successfully added new user!
-                        <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
+            {isOwner &&
+                <div>
+                    <div style={{ display: 'flex' }}>
+                        <input
+                            type='text'
+                            value={newUserAddress}
+                            onChange={(e) => setNewUserAddress(state => e.target.value === '' || e.target.value.match(/^0x[a-fA-F0-9]{40}$/ig) ? e.target.value : state)}
+                            placeholder='Address'
+                            style={{ flexGrow: 1 }}
+                        />
+                        <button disabled={!write || isLoading} onClick={() => write?.()}>
+                            {isLoading ? 'Adding User...' : 'Add User'}
+                        </button>
                     </div>
-                )}
-                {(isPrepareError || isError) && (
-                    <div className='container__error'>Error: {(prepareError || error)?.message}</div>
-                )}
-            </div>
+                    <div>
+                        {isSuccess && (
+                            <div className='container__success'>
+                                Successfully added new user!
+                                <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
+                            </div>
+                        )}
+                        {(isPrepareError || isError) && (
+                            <div className='container__error'>Error: {(prepareError || error)?.message}</div>
+                        )}
+                    </div>
+                </div>
+            }
         </>
     )
 }

@@ -79,9 +79,11 @@ export default function NewGroup() {
                             {walletAddress === address && <span style={{ marginRight: '10px' }}>You</span>}
                             {address}
                         </span>
-                        <span>
-                            <button onClick={() => onRemoveClick(address)}>Remove</button>
-                        </span>
+                        {walletAddress !== address &&
+                            <span>
+                                <button onClick={() => onRemoveClick(address)}>Remove</button>
+                            </span>
+                        }
                     </div>
                 )}
             </div>

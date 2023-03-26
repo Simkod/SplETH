@@ -9,6 +9,7 @@ export interface ContractState {
   contractAddressTitle: string | undefined,
   contractAddress: `0x${string}` | undefined | null;
   contractABI: any[];
+  isOwner: boolean;
 
   needFetchGroups: boolean;
   needFetchBalance: boolean;
@@ -22,6 +23,7 @@ const initialState: ContractState = {
   contractAddressTitle: undefined,
   contractAddress: undefined,
   contractABI: _abi,
+  isOwner: false,
 
   needFetchGroups: false,
   needFetchBalance: false,
@@ -57,6 +59,9 @@ export const contractSlice = createSlice({
     setContractABI: (state, action: PayloadAction<any[]>) => {
       state.contractABI = action.payload;
     },
+    setIsOwner: (state, action: PayloadAction<boolean>) => {
+      state.isOwner = action.payload;
+    },
     setNeedFetchGroups: (state, action: PayloadAction<boolean>) => {
       state.needFetchGroups = action.payload;
     },
@@ -88,6 +93,7 @@ export const {
   setContractAddressTitle: setContractAddressTitleAction,
   setContractAddress: setContractAddressAction,
   setContractABI: setContractABIAction,
+  setIsOwner: setIsOwnerAction,
   setNeedFetchGroups: setNeedFetchGroupsAction,
   setNeedFetchBalance: setNeedFetchBalanceAction,
   setNeedFetchUsers: setNeedFetchUsersAction
@@ -101,6 +107,7 @@ export const selectContractFactoryABI = (state: RootState) => state.contract.con
 export const selectContractAddressTitle = (state: RootState) => state.contract.contractAddressTitle;
 export const selectContractAddress = (state: RootState) => state.contract.contractAddress;
 export const selectContractABI = (state: RootState) => state.contract.contractABI;
+export const selectIsOwner = (state: RootState) => state.contract.isOwner;
 
 export const selectNeedFetchGroups = (state: RootState) => state.contract.needFetchGroups;
 export const selectNeedFetchBalance = (state: RootState) => state.contract.needFetchBalance;

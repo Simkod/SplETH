@@ -122,8 +122,8 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
 
     constructor(address[] memory initialUsers, string memory title) {
         titleWallet = title;
-        users[msg.sender] = User({balance: 0, exists: true});
-        userAddresses.push(msg.sender);
+        users[tx.origin] = User({balance: 0, exists: true});
+        userAddresses.push(tx.origin);
 
         for (uint256 i = 0; i < initialUsers.length; i++) {
             users[initialUsers[i]] = User({balance: 0, exists: true});

@@ -17,7 +17,7 @@ export interface ContractState {
 };
 
 const initialState: ContractState = {
-  contractFactoryAddress: '0x7EFe35E3A26D4F83C54a7372962C23E6B511aF24',
+  contractFactoryAddress: '0x9317513517332400889d8280eE8e012770061390',
   contractFactoryABI: _abiFactory,
   contractAddressTitle: undefined,
   contractAddress: undefined,

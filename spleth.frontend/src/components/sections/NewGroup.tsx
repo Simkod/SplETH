@@ -1,17 +1,19 @@
 import { useState } from 'react'
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { selectContractFactoryABI, selectContractFactoryAddress, setNeedFetchGroupsAction } from '../../reducers/contractReducer';
 import './NewGroup.css';
 
 export default function NewGroup() {
+    const { address: walletAddress } = useAccount();
+
     const dispatch = useAppDispatch();
     const contractFactoryAddress = useAppSelector(selectContractFactoryAddress);
     const contractFactoryABI = useAppSelector(selectContractFactoryABI);
 
     const [title, setTitle] = useState<string>('');
     const [memberAddress, setMemberAddress] = useState<string>('');
-    const [memberAddresses, setMemberAddresses] = useState<string[]>([]);
+    const [memberAddresses, setMemberAddresses] = useState<string[]>([walletAddress as string]);
 
     const {
         config,
@@ -21,7 +23,7 @@ export default function NewGroup() {
         address: contractFactoryAddress as any,
         abi: contractFactoryABI,
         functionName: 'createContract',
-        args: [memberAddresses, title],
+        args: [memberAddresses.filter(p => p != walletAddress), title],
         enabled: !!(memberAddresses.length && title),
         onError: (error) => console.error('createContract', error),
     });
@@ -73,7 +75,10 @@ export default function NewGroup() {
                 {memberAddresses.map(address =>
                     <div key={address} className='new-group__members-item'>
                         <img className='new-group__avatar' src={`https://effigy.im/a/${address}.png`}></img>
-                        <span style={{ flexGrow: 1 }}>{address}</span>
+                        <span style={{ flexGrow: 1 }}>
+                            {walletAddress === address && <span style={{ marginRight: '10px' }}>You</span>}
+                            {address}
+                        </span>
                         <span>
                             <button onClick={() => onRemoveClick(address)}>Remove</button>
                         </span>

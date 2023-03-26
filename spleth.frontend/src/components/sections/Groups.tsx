@@ -36,6 +36,8 @@ export default function Groups() {
     const loadGroupUsers = async (factoryChildAddresses: string[]) => {
         setIsFetchingGetAllUsers(true);
         try {
+            console.log('factoryChildAddresses', factoryChildAddresses);
+
             const response = await readContracts({
                 contracts: factoryChildAddresses.map(address => {
                     return {
@@ -52,6 +54,8 @@ export default function Groups() {
                     _myGroupAddresses.push(factoryChildAddresses[index]);
                 }
             });
+            console.log('_myGroupAddresses', _myGroupAddresses);
+
 
             // get titles
             const responseTitles = await readContracts({

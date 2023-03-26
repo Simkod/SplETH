@@ -15,7 +15,7 @@ export default function Users() {
 
     const { address } = useAccount();
     const { error, isFetching: getAllUsersIsFetching, isFetched: getAllUsersIsFetched } = useContractRead({
-        address: contractAddress,
+        address: contractAddress as any,
         abi: contractABI,
         functionName: 'getAllUsers',
         onError: (error) => console.error('getAllUsers', error),

@@ -17,7 +17,7 @@ export default function Withdraw() {
         isError: isPrepareError
     } = usePrepareContractWrite({
         enabled: isReady,
-        address: contractAddress,
+        address: contractAddress as any,
         abi: contractABI,
         functionName: 'withdraw',
         onError: (error) => console.error('withdraw', error),
@@ -63,7 +63,7 @@ export default function Withdraw() {
                 )}
             </div>
 
-        
+
         </div>
     )
 }

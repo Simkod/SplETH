@@ -2,7 +2,7 @@
 
 .dashboard__header {
     display: flex;
-    align-items: baseline;
+    align-items: center;
 }
 
 .dashboard__header-title {

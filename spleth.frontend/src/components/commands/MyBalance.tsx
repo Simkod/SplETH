@@ -13,7 +13,7 @@ export default function MyBalance() {
 
     const { address } = useAccount();
     const { error, isFetching, isFetched } = useContractRead({
-        address: contractAddress,
+        address: contractAddress as any,
         abi: contractABI,
         functionName: 'getBalance',
         args: [address],

@@ -6,7 +6,7 @@ import _abi from '../contract.abi.json';
 export interface ContractState {
   contractFactoryAddress: `0x${string}`;
   contractFactoryABI: any[];
-  contractAddress: `0x${string}` | undefined;
+  contractAddress: `0x${string}` | undefined | null;
   contractABI: any[];
   status: 'idle' | 'loading' | 'failed';
 };
@@ -38,7 +38,7 @@ export const contractSlice = createSlice({
   initialState,
   // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
-    setContractAddress: (state, action: PayloadAction<`0x${string}` | undefined>) => {
+    setContractAddress: (state, action: PayloadAction<`0x${string}` | undefined | null>) => {
       state.contractAddress = action.payload;
     },
     setContractABI: (state, action: PayloadAction<any[]>) => {

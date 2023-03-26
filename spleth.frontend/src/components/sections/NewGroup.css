@@ -1,0 +1,18 @@
+.new-group {}
+
+.new-group__members {
+    text-align: left;
+    margin: 20px 10px;
+}
+
+.new-group__members-item {
+    align-items: center;
+    display: flex;
+    margin: 10px 0;
+}
+
+.new-group__avatar {
+    width: 30px;
+    border-radius: 15px;
+    margin-right: 10px;
+}

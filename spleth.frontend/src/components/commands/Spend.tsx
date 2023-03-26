@@ -21,7 +21,7 @@ export default function Spend() {
         error: prepareError,
         isError: isPrepareError
     } = usePrepareContractWrite({
-        address: contractAddress,
+        address: contractAddress as any,
         abi: contractABI,
         functionName: 'spend',
         args: [

@@ -15,12 +15,12 @@ export default function Dashboard() {
     const [balance, setBalance] = useState<string>('');
 
     const { data: balanceData, isError: balanceIsError, error: balanceError, isLoading: balanceIsLoading } = useBalance({
-        address: selectedContractAddress,
+        address: selectedContractAddress as any,
     });
 
     const { address } = useAccount();
     const { error, isFetching: userContractBalanceIsFetching, isFetched: userContractBalanceIsFetched } = useContractRead({
-        address: selectedContractAddress,
+        address: selectedContractAddress as any,
         abi: selectedContractABI,
         functionName: 'getBalance',
         args: [address],

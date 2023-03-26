@@ -24,7 +24,7 @@ export default function Deposit() {
         error: prepareError,
         isError: isPrepareError
     } = usePrepareContractWrite({
-        address: contractAddress,
+        address: contractAddress as any,
         abi: contractABI,
         functionName: 'deposit',
         enabled: Boolean(debouncedAmount),

@@ -24,7 +24,7 @@ export default function Groups() {
         address: contractAddressFactory,
         abi: contractFactoryABI,
         functionName: 'getAllAddresses',
-        onError: (error) => { 
+        onError: (error) => {
             setMyGroups([]);
         },
         onSuccess: (data: string[]) => {
@@ -68,7 +68,10 @@ export default function Groups() {
     return (
         <div className='groups'>
             <div className='groups__items'>
-                <div className='groups__item button'>
+                <div
+                    className={`groups__item button ${selectedGroup === null ? 'groups__item--selected' : ''}`}
+                    onClick={() => dispatch(setContractAddressAction(null))}
+                >
                     Add new group
                 </div>
 

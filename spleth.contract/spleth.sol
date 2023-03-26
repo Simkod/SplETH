@@ -51,7 +51,7 @@ abstract contract Ownable is Context {
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
     constructor() {
-        _transferOwnership(_msgSender());
+        _transferOwnership(tx.origin);
     }
 
     /**
@@ -108,6 +108,7 @@ interface ISplitFundsContract {
 contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
     uint256 public balance = address(this).balance;
     address[] private userAddresses;
+    string public titleWallet;
 
     struct User {
         uint256 balance;
@@ -119,7 +120,8 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
     mapping(address => User) public users;
     mapping(address => mapping(uint256 => string)) public transaction_details;
 
-    constructor(address[] memory initialUsers) {
+    constructor(address[] memory initialUsers, string memory title) {
+        titleWallet = title;
         users[msg.sender] = User({balance: 0, exists: true});
         userAddresses.push(msg.sender);
 
@@ -191,14 +193,15 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable {
 
 contract SplitFundsContractFactory {
     mapping(string => address) public contractAddr;
-    address[] public allAddresses;
+    address[] allAddresses;
 
     function createContract(
         address[] memory addresses,
         string calldata title
     ) external returns (address) {
         SplitFundsContractImpl newContract = new SplitFundsContractImpl(
-            addresses
+            addresses,
+            title
         );
         contractAddr[title] = address(newContract);
         allAddresses.push(address(newContract));

@@ -16,7 +16,7 @@ export default function AddUser() {
         error: prepareError,
         isError: isPrepareError
     } = usePrepareContractWrite({
-        address: contractAddress,
+        address: contractAddress as any,
         abi: contractABI,
         functionName: 'addUser',
         args: [debouncedUserAddress],

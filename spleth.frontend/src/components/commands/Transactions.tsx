@@ -16,7 +16,7 @@ export default function Transactions() {
                 const data = await window.alchemy.core.getAssetTransfers({
                     //fromBlock: "0x0",
                     //fromAddress: contractAddress,
-                    toAddress: contractAddress,
+                    toAddress: contractAddress as any,
                     category: [AssetTransfersCategory.EXTERNAL, AssetTransfersCategory.ERC20, AssetTransfersCategory.ERC721, AssetTransfersCategory.ERC1155, AssetTransfersCategory.SPECIALNFT],
                     excludeZeroValue: false
                 });

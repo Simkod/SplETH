@@ -13,6 +13,7 @@ export default function Spend() {
     const contractABI = useAppSelector(selectContractABI);
 
     const [amount, setAmount] = useState<string>('');
+    const [comment, setComment] = useState<string>('');
     const debouncedAmount = useDebounce(amount);
     const [recipientAddress, setRecipientAddress] = useState<`0x${string}` | undefined | string>('');
     const debouncedRecipientAddress = useDebounce(recipientAddress);
@@ -27,7 +28,8 @@ export default function Spend() {
         functionName: 'spend',
         args: [
             isNumeric(amount) ? ethers.utils.parseEther(amount as string) : undefined,
-            debouncedRecipientAddress
+            debouncedRecipientAddress,
+            comment
         ],
         enabled: Boolean(debouncedAmount) && Boolean(debouncedRecipientAddress),
         onError: (error) => console.error('spend', error),
@@ -50,6 +52,15 @@ export default function Spend() {
                         value={recipientAddress}
                         onChange={(e) => setRecipientAddress(state => e.target.value === '' || e.target.value.match(/^0x[a-fA-F0-9]{40}$/ig) ? e.target.value : state)}
                         placeholder='Recipient address'
+                        style={{ flexGrow: 1 }}
+                    />
+                </div>
+                <div style={{ display: 'flex' }}>
+                    <input
+                        type='text'
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        placeholder='Comment'
                         style={{ flexGrow: 1 }}
                     />
                 </div>

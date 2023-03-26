@@ -1,13 +1,14 @@
 import { ethers } from 'ethers';
 import { ChangeEvent, useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import useDebounce from '../../hooks/useDebounce';
-import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
 
 export default function Spend() {
+    const dispatch = useAppDispatch();
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
 
@@ -34,6 +35,9 @@ export default function Spend() {
     const { data, error, isError, write } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
+        onSuccess(data) {
+            dispatch(setNeedFetchBalanceAction(true));
+        },
     });
 
     return (

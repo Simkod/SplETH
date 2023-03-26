@@ -68,8 +68,8 @@ export default function Groups() {
             refetchGetAllAddresses();
             dispatch(setNeedFetchGroupsAction(false));
         }
-    }, [needFetchGroups])
-    
+    }, [needFetchGroups]);
+
 
     if (isFetchingGetAllAddresses || isFetchingGetAllUsers)
         return (<Loader />);

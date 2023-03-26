@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
-import { useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectContractABI, selectContractAddress, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 import Deposit from './Deposit';
 
 export default function Withdraw() {
+    const dispatch = useAppDispatch();
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
 
@@ -25,6 +26,9 @@ export default function Withdraw() {
     const { data, error, isError, write } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
+        onSuccess(data) {
+            dispatch(setNeedFetchBalanceAction(true));
+        },
     });
 
     return (
@@ -42,17 +46,15 @@ export default function Withdraw() {
                 {isSuccess && (
                     <div className='container__success'>
                         Successfully withdrew!
-                        <div>
-                            <a
-                                href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}
-                                style={{ margin: '10px' }}
-                                title='Open mumbai.polygonscan.com'
-                                className='button'
-                                target='_blank'
-                            >
-                                <Emoji symbol='🔗' /> mumbai.polygonscan.com
-                            </a>
-                        </div>
+                        <a
+                            href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}
+                            style={{ margin: '10px' }}
+                            title='Open mumbai.polygonscan.com'
+                            className='button'
+                            target='_blank'
+                        >
+                            <Emoji symbol='🔗' />
+                        </a>
                     </div>
                 )}
                 {(isPrepareError || isError) && (

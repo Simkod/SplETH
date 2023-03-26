@@ -1,25 +1,27 @@
 import { BigNumber, ethers } from 'ethers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccount, useBalance, useContractRead } from 'wagmi';
-import { useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectContractABI, selectContractAddress, selectNeedFetchBalance, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import Users from '../commands/Users';
 import Emoji from '../shared/Emoji';
 import Loader from '../shared/Loader';
 import './Dashboard.css';
 
 export default function Dashboard() {
+    const dispatch = useAppDispatch();
     const selectedContractAddress = useAppSelector(selectContractAddress);
     const selectedContractABI = useAppSelector(selectContractABI);
+    const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
     const [balance, setBalance] = useState<string>('');
 
-    const { data: balanceData, isError: balanceIsError, error: balanceError, isLoading: balanceIsLoading } = useBalance({
+    const { data: balanceData, isError: balanceIsError, error: balanceError, isLoading: balanceIsLoading, refetch: contractBalanceRefetch } = useBalance({
         address: selectedContractAddress as any,
     });
 
     const { address } = useAccount();
-    const { error, isFetching: userContractBalanceIsFetching, isFetched: userContractBalanceIsFetched } = useContractRead({
+    const { error, isFetching: userContractBalanceIsFetching, isFetched: userContractBalanceIsFetched, refetch: userContractBalanceRefetch } = useContractRead({
         address: selectedContractAddress as any,
         abi: selectedContractABI,
         functionName: 'getBalance',
@@ -27,6 +29,14 @@ export default function Dashboard() {
         onError: (error) => setBalance('***'),
         onSuccess: (data: BigNumber) => setBalance(ethers.utils.formatUnits(data))
     });
+
+    useEffect(() => {
+        if (needFetchBalance) {
+            contractBalanceRefetch();
+            userContractBalanceRefetch();
+            dispatch(setNeedFetchBalanceAction(false));
+        }
+    }, [needFetchBalance]);
 
 
     return (

@@ -6,12 +6,14 @@ import {
     usePrepareContractWrite,
     useWaitForTransaction,
 } from 'wagmi';
-import { useAppSelector } from '../../app/hooks';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import useDebounce from '../../hooks/useDebounce';
-import { selectContractABI, selectContractAddress } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
+import Emoji from '../shared/Emoji';
 
 export default function Deposit() {
+    const dispatch = useAppDispatch();
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
 
@@ -38,6 +40,9 @@ export default function Deposit() {
     const { data, error, isError, write } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
+        onSuccess(data) {
+            dispatch(setNeedFetchBalanceAction(true));
+        }
     });
 
     return (
@@ -59,10 +64,8 @@ export default function Deposit() {
                 <div>
                     {isSuccess && (
                         <div className='container__success'>
-                            Successfully sent {amount} matic to {contractAddress}
-                            <div>
-                                <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
-                            </div>
+                            Successfully deposit {amount}
+                            <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
                         </div>
                     )}
                     {(isPrepareError || isError) && (

@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
-import { useAppSelector } from '../../app/hooks';
-import { selectContractFactoryABI, selectContractFactoryAddress } from '../../reducers/contractReducer';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectContractFactoryABI, selectContractFactoryAddress, setNeedFetchGroupsAction } from '../../reducers/contractReducer';
 import './NewGroup.css';
 
 export default function NewGroup() {
+    const dispatch = useAppDispatch();
     const contractFactoryAddress = useAppSelector(selectContractFactoryAddress);
     const contractFactoryABI = useAppSelector(selectContractFactoryABI);
 
@@ -23,21 +24,15 @@ export default function NewGroup() {
         args: [memberAddresses, title],
         enabled: !!(memberAddresses.length && title),
         onError: (error) => console.error('createContract', error),
-        onSuccess(data) {
-            console.log('usePrepareContractWrite onSuccess', data);
-        },
-        onSettled(data, error) {
-            console.log('usePrepareContractWrite onSettled', data);
-        },
     });
     const { data, error, isError, write } = useContractWrite(config);
     const { isLoading, isSuccess, data: data2 } = useWaitForTransaction({
         hash: data?.hash,
-        onSettled(data, error) {
-            console.log('useWaitForTransaction onSettled', data);
-        },
         onSuccess(data) {
-            console.log('useWaitForTransaction onSuccess', data);
+            setTitle('');
+            setMemberAddress('');
+            setMemberAddresses([]);
+            dispatch(setNeedFetchGroupsAction(true));
         },
     });
 
@@ -93,7 +88,7 @@ export default function NewGroup() {
             {(isPrepareError || isError) && (
                 <div className='container__error'>
                     Error: {(prepareError || error)?.message} <br />
-                    {(prepareError || error as any)?.data?.message}
+                    {/* {(prepareError || error as any)?.data?.message} */}
                 </div>
             )}
         </div>

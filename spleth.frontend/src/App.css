@@ -71,6 +71,7 @@
 .container__error {
   margin: 10px 0;
   padding: 5px;
+  max-width: 500px;
   border-radius: 6px;
   overflow-wrap: break-word;
   background-color: orangered;

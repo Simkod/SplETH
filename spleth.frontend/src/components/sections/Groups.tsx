@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { readContracts, useAccount, useContractRead } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, selectContractFactoryABI, selectContractFactoryAddress, setContractAddressAction } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, selectContractFactoryABI, selectContractFactoryAddress, selectNeedFetchGroups, setContractAddressAction, setNeedFetchGroupsAction } from '../../reducers/contractReducer';
 import Loader from '../shared/Loader';
 import './Groups.css';
 
 export default function Groups() {
     const dispatch = useAppDispatch();
+    const needFetchGroups = useAppSelector(selectNeedFetchGroups);
     const selectedGroup = useAppSelector(selectContractAddress);
 
     const [isFetchingGetAllUsers, setIsFetchingGetAllUsers] = useState<boolean>(false);
@@ -20,7 +21,7 @@ export default function Groups() {
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
 
-    const { error, isFetching: isFetchingGetAllAddresses, isFetched, refetch } = useContractRead({
+    const { error, isFetching: isFetchingGetAllAddresses, isFetched, refetch: refetchGetAllAddresses } = useContractRead({
         address: contractAddressFactory,
         abi: contractFactoryABI,
         functionName: 'getAllAddresses',
@@ -61,6 +62,14 @@ export default function Groups() {
     const onSelectGroupClick = (contractAddress: string) => {
         dispatch(setContractAddressAction(contractAddress as `0x${string}`));
     }
+
+    useEffect(() => {
+        if (needFetchGroups) {
+            refetchGetAllAddresses();
+            dispatch(setNeedFetchGroupsAction(false));
+        }
+    }, [needFetchGroups])
+    
 
     if (isFetchingGetAllAddresses || isFetchingGetAllUsers)
         return (<Loader />);

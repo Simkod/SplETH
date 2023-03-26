@@ -68,7 +68,7 @@ export default function Deposit() {
                     {(isPrepareError || isError) && (
                         <div className='container__error'>
                             Error: {(prepareError || error)?.message} <br />
-                            {(prepareError || error as any)?.data?.message}
+                            {/* {(prepareError || error as any)?.data?.message} */}
                         </div>
                     )}
                 </div>

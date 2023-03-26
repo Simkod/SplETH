@@ -1,5 +1,6 @@
 import { useAppSelector } from '../../app/hooks'
 import { selectContractAddress } from '../../reducers/contractReducer'
+import Deposit from '../commands/Deposit'
 import Spend from '../commands/Spend'
 import Transactions from '../commands/Transactions'
 import Withdraw from '../commands/Withdraw'
@@ -26,9 +27,16 @@ export default function HomePage() {
                     {selectedContractAddress &&
                         <>
                             <Dashboard />
+                            <div style={{ display: 'flex' }}>
+                                <div style={{ flexGrow: '1' }}>
+                                    <Spend />
+                                </div>
+                                <div style={{ flexGrow: '1' }}>
+                                    <Deposit />
+                                    <Withdraw />
+                                </div>
+                            </div>
 
-                            <Spend />
-                            <Withdraw />
                             {/* <Transactions /> */}
                         </>
                     }

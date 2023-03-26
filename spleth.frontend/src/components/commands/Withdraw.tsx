@@ -63,7 +63,7 @@ export default function Withdraw() {
                 )}
             </div>
 
-            <Deposit />
+        
         </div>
     )
 }

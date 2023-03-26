@@ -42,33 +42,36 @@ export default function Deposit() {
 
     return (
         <>
-            <div style={{ display: 'flex' }}>
-                <input
-                    type='text'
-                    onChange={(e) => setAmount(state => e.target.value === '' || isNumeric(e.target.value) ? e.target.value : state)}
-                    placeholder='Amount'
-                    value={amount}
-                    style={{ flexGrow: 1 }}
-                />
-                <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
-                    {isLoading ? 'Sending...' : 'Deposit'}
-                </button>
-            </div>
-            <div>
-                {isSuccess && (
-                    <div className='container__success'>
-                        Successfully sent {amount} matic to {contractAddress}
-                        <div>
-                            <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
+            <div className='container'>
+                <div className='container__title'>Deposit</div>
+                <div style={{ display: 'flex' }}>
+                    <input
+                        type='text'
+                        onChange={(e) => setAmount(state => e.target.value === '' || isNumeric(e.target.value) ? e.target.value : state)}
+                        placeholder='Amount'
+                        value={amount}
+                        style={{ flexGrow: 1 }}
+                    />
+                    <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
+                        {isLoading ? 'Sending...' : 'Deposit'}
+                    </button>
+                </div>
+                <div>
+                    {isSuccess && (
+                        <div className='container__success'>
+                            Successfully sent {amount} matic to {contractAddress}
+                            <div>
+                                <a href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'>mumbai.polygonscan.com</a>
+                            </div>
                         </div>
-                    </div>
-                )}
-                {(isPrepareError || isError) && (
-                    <div className='container__error'>
-                        Error: {(prepareError || error)?.message} <br />
-                        {(prepareError || error as any)?.data?.message}
-                    </div>
-                )}
+                    )}
+                    {(isPrepareError || isError) && (
+                        <div className='container__error'>
+                            Error: {(prepareError || error)?.message} <br />
+                            {(prepareError || error as any)?.data?.message}
+                        </div>
+                    )}
+                </div>
             </div>
         </>
     )

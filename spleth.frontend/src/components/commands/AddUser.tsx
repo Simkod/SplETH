@@ -39,7 +39,7 @@ export default function AddUser() {
                     style={{ flexGrow: 1 }}
                 />
                 <button disabled={!write || isLoading} onClick={() => write?.()}>
-                    {isLoading ? 'Adding User...' : 'addUser'}
+                    {isLoading ? 'Adding User...' : 'Add User'}
                 </button>
                 {isSuccess && (
                     <div className='container__success'>

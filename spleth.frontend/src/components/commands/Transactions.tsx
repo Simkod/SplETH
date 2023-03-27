@@ -25,7 +25,7 @@ export default function Transactions() {
                     excludeZeroValue: false
                 });
                 console.log('alchemy.core.getAssetTransfers', contractAddress, data);
-                setTransactions(data.transfers);
+                setTransactions(data.transfers.reverse());
             } catch (error) {
                 console.error('alchemy.core.getAssetTransfers', error);
             }

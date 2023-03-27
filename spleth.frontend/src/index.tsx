@@ -9,7 +9,7 @@ import './index.css';
 const container = document.getElementById('root')!;
 const root = createRoot(container);
 
-console.log('version', 0.5);
+console.log('version', 0.6);
 
 
 root.render(

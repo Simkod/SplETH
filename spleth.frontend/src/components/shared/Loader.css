@@ -1,5 +1,6 @@
 .lds-ellipsis {
-    display: inline-block;
+    display: flex;
+    align-items: center;
     position: relative;
     width: 80px;
     height: 40px;
@@ -7,7 +8,6 @@
 
 .lds-ellipsis div {
     position: absolute;
-    top: 16px;
     width: 13px;
     height: 13px;
     border-radius: 50%;

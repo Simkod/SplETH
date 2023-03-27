@@ -84,7 +84,10 @@ export default function Dashboard() {
                     {!userContractBalanceIsFetching && userContractBalanceIsFetched &&
                         <>
                             <div className='dashboard__pin-title'>Your Balance</div>
-                            <div className='dashboard__pin-balance'>{balance} {balanceData?.symbol}</div>
+                            <div className='dashboard__pin-balance' title={balance}>
+                                {balance?.length > 3 ? Number(balance)?.toFixed(3) : balance} &nbsp;
+                                {balanceData?.symbol}
+                            </div>
                         </>}
                 </div>
                 <div className='dashboard__pin dashboard__pin--colored'>
@@ -92,7 +95,10 @@ export default function Dashboard() {
                     {!balanceIsLoading && balanceData &&
                         <>
                             <div className='dashboard__pin-title'>Smart Contract Balance</div>
-                            <div className='dashboard__pin-balance'>{balanceData?.formatted} {balanceData?.symbol}</div>
+                            <div className='dashboard__pin-balance' title={balanceData?.formatted}>
+                                {balanceData?.formatted?.length > 3 ? Number(balanceData?.formatted)?.toFixed(3) : balanceData?.formatted} &nbsp;
+                                {balanceData?.symbol}
+                            </div>
                         </>}
                 </div>
             </div>

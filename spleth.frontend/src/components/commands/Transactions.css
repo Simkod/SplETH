@@ -1,0 +1,23 @@
+.transactions {}
+
+.transactions__avatar {
+    width: 30px;
+    border-radius: 15px;
+    margin-right: 10px;
+    margin-left: 5px;
+}
+
+.transactions__item {
+    border-radius: 5px;
+    font-size: 12px;
+    display: flex;
+}
+
+.transactions__item:hover {
+    background-color: #eee;
+}
+
+.transactions__item-title {
+    align-items: center;
+    display: flex;
+}

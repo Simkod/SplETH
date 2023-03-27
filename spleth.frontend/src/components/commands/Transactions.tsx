@@ -4,6 +4,7 @@ import { useAppSelector } from '../../app/hooks';
 import { selectContractABI, selectContractAddress, selectNeedFetchBalance } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 import Loader from '../shared/Loader';
+import './Transactions.css';
 
 export default function Transactions() {
     const contractAddress = useAppSelector(selectContractAddress);
@@ -36,7 +37,7 @@ export default function Transactions() {
     }, [contractAddress, needFetchBalance]);
 
     return (
-        <div className='container'>
+        <div className='container transactions'>
             <div className='container__title'>Transactions</div>
             {isFetchingTransfers && <Loader />}
             {!isFetchingTransfers && <div>
@@ -44,10 +45,10 @@ export default function Transactions() {
                     Empty
                 </div>}
                 {transactions.map(transaction =>
-                    <div key={transaction.uniqueId} style={{ fontSize: '12px', display: 'flex', margin: '10px 0' }}>
-                        <div style={{ flexGrow: 1 }}>
-                            From: {transaction.from} <br />
-                            To: {transaction.to}
+                    <div className='transactions__item' key={transaction.uniqueId}>
+                        <div className='transactions__item-title' style={{ flexGrow: 1 }}>
+                            <img className='transactions__avatar' src={`https://effigy.im/a/${transaction.from}.png`}></img>
+                            <span>{transaction.from}</span>
                         </div>
                         <div>
                             <span style={{ fontWeight: 'bold' }}>{transaction.value} {transaction.asset}</span>

@@ -9,7 +9,7 @@
 }
 
 .users__title-balance {
-    color: #ccc;
+    color: #ccccccaa;
     font-weight: bold;
     font-size: 13px;
 }
@@ -37,12 +37,12 @@
 }
 
 .users__list-item-balance {
-    color: firebrick;
+    color: #b22222aa;
     font-size: 13px;
 }
 
 .users__list-item-balance--positive {
-    color: forestgreen;
+    color: #228b22aa;
 }
 
 .users__avatar {

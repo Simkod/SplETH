@@ -2,7 +2,6 @@ import { ethers } from 'ethers';
 import { ChangeEvent, useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import useDebounce from '../../hooks/useDebounce';
 import { selectContractABI, selectContractAddress, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
@@ -14,9 +13,7 @@ export default function Spend() {
 
     const [amount, setAmount] = useState<string>('');
     const [comment, setComment] = useState<string>('');
-    const debouncedAmount = useDebounce(amount);
     const [recipientAddress, setRecipientAddress] = useState<`0x${string}` | undefined | string>('');
-    const debouncedRecipientAddress = useDebounce(recipientAddress);
 
     const {
         config,
@@ -27,18 +24,25 @@ export default function Spend() {
         abi: contractABI,
         functionName: 'spend',
         args: [
-            isNumeric(amount) ? ethers.utils.parseEther(amount as string) : undefined,
-            debouncedRecipientAddress,
+            isNumeric(amount) && amount ? ethers.utils.parseEther(amount as string) : undefined,
+            recipientAddress,
             comment
         ],
-        enabled: Boolean(debouncedAmount) && Boolean(debouncedRecipientAddress),
+        enabled: !!amount && !!recipientAddress,
         onError: (error) => console.error('spend', error),
     });
-    const { data, error, isError, write } = useContractWrite(config);
+    const { data, error, isError, write, reset } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
         onSuccess(data) {
+            setAmount('');
+            setComment('');
+            setRecipientAddress('');
             dispatch(setNeedFetchBalanceAction(true));
+
+            setTimeout(() => {
+                reset();
+            }, 5000);
         },
     });
 

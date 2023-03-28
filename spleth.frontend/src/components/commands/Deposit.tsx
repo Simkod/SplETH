@@ -37,11 +37,16 @@ export default function Deposit() {
         onError: (error) => console.error('deposit', error),
         onSuccess: (data) => console.log('deposit', data)
     });
-    const { data, error, isError, write } = useContractWrite(config);
+    const { data, error, isError, write, reset } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
         onSuccess(data) {
+            setAmount('');
             dispatch(setNeedFetchBalanceAction(true));
+
+            setTimeout(() => {
+                reset();
+            }, 5000);
         }
     });
 

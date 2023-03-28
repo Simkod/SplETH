@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useContractRead, useAccount, readContracts } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, selectNeedFetchUsers, setNeedFetchUsersAction } from '../../reducers/contractReducer';
+import { selectContractABI, selectContractAddress, selectNeedFetchBalance, selectNeedFetchUsers, setNeedFetchUsersAction } from '../../reducers/contractReducer';
 import truncateEthAddress from '../../utils/address';
 import Loader from '../shared/Loader';
 import AddUser from './AddUser';
@@ -13,6 +13,7 @@ export default function Users() {
     const needFetchUsers = useAppSelector(selectNeedFetchUsers);
     const contractAddress = useAppSelector(selectContractAddress);
     const contractABI = useAppSelector(selectContractABI);
+    const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
     const [isFetchingGetBalance, setIsFetchingGetBalance] = useState<boolean>(false);
     const [users, setUsers] = useState<{ address: string, balance?: string }[]>([]);
@@ -37,6 +38,12 @@ export default function Users() {
         refetchGetAllUsers();
         dispatch(setNeedFetchUsersAction(false));
     }, [contractAddress, needFetchUsers]);
+
+    useEffect(() => {
+        if (needFetchBalance) {
+            loadBalance(users.map(p => p.address));
+        }
+    }, [needFetchBalance]);
 
     const loadBalance = async (userAddresses: string[]) => {
         setIsFetchingGetBalance(true);
@@ -92,9 +99,9 @@ export default function Users() {
                                     <span className='users__list-item-adress'>{truncateEthAddress(user.address)}</span>
                                 </span>
                                 {isFetchingGetBalance && <Loader height={30} />}
-                                <span className={`users__list-item-balance ${user.balance && Number(user.balance) > 0 ? 'users__list-item-balance--positive' : ''}`}>
+                                {!isFetchingGetBalance && <span className={`users__list-item-balance ${user.balance && Number(user.balance) > 0 ? 'users__list-item-balance--positive' : ''}`}>
                                     {user.balance && user.balance.length > 3 ? Number(user.balance)?.toFixed(3) : user.balance}
-                                </span>
+                                </span>}
                             </div>
                         )}
                     </div>

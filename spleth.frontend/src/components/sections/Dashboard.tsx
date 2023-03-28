@@ -48,10 +48,14 @@ export default function Dashboard() {
     });
 
     useEffect(() => {
-        if (needFetchBalance) {
-            contractBalanceRefetch();
-            userContractBalanceRefetch();
+        const update = async () => {
+            await contractBalanceRefetch();
+            await userContractBalanceRefetch();
             dispatch(setNeedFetchBalanceAction(false));
+        }
+
+        if (needFetchBalance) {
+            update();
         }
     }, [needFetchBalance]);
 

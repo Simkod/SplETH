@@ -23,12 +23,16 @@ export default function Withdraw() {
         functionName: 'withdraw',
         onError: (error) => console.error('withdraw', error),
     });
-    const { data, error, isError, write } = useContractWrite(config);
+    const { data, error, isError, write, reset } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
         onSuccess(data) {
             dispatch(setNeedFetchBalanceAction(true));
-        },
+
+            setTimeout(() => {
+                reset();
+            }, 5000);
+        }
     });
 
     return (

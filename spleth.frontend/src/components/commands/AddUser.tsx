@@ -26,12 +26,16 @@ export default function AddUser() {
         enabled: Boolean(debouncedUserAddress),
         onError: (error) => console.error('addUser', error),
     });
-    const { data, error, isError, write } = useContractWrite(config);
+    const { data, error, isError, write, reset } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
         onSuccess(data) {
             setNewUserAddress('');
             dispatch(setNeedFetchUsersAction(true));
+
+            setTimeout(() => {
+                reset();
+            }, 5000);
         },
     });
 
@@ -42,6 +46,7 @@ export default function AddUser() {
                     <div style={{ display: 'flex' }}>
                         <input
                             type='text'
+                            disabled={isLoading}
                             value={newUserAddress}
                             onChange={(e) => setNewUserAddress(state => e.target.value === '' || e.target.value.match(/^0x[a-fA-F0-9]{40}$/ig) ? e.target.value : state)}
                             placeholder='Address'

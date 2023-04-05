@@ -69,7 +69,7 @@ export default function Deposit() {
                 <div>
                     {isSuccess && (
                         <div className='container__success'>
-                            Successfully deposit {amount}
+                            Successfully deposited {amount}
                             <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
                         </div>
                     )}

@@ -83,7 +83,7 @@ export default function Spend() {
 
                 {isSuccess && (
                     <div className='container__success'>
-                        Successfully spended!
+                        Successfully spent!
                         <a
                             href={`https://mumbai.polygonscan.com/tx/${data?.hash}`}
                             title='Open mumbai.polygonscan.com'

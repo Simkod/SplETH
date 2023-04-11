@@ -123,17 +123,19 @@ button:focus-visible,
   outline-offset: 1px;
 }
 
+select,
 input[type=text] {
   border-radius: 6px;
   font-size: 16px;
   background: #fbfbfb;
   border: 2px solid transparent;
-  height: 24px;
   margin: 5px;
   padding: 2px 5px;
   box-shadow: 0 0 0 1px #dddddd, 0 2px 4px 0 rgb(0 0 0 / 7%), 0 1px 1.5px 0 rgb(0 0 0 / 5%);
 }
 
+select:focus,
+select:hover,
 input[type=text]:focus,
 input[type=text]:focus-visible,
 input[type=text]:hover {

@@ -1,0 +1,25 @@
+{
+    "137": {
+        "name": "Polygon Mainnet",
+        "blockExplorer": "https://polygonscan.com",
+        "contractFactoryAddress": "",
+        "erc20Tokens": []
+    },
+    "80001": {
+        "name": "Mumbai Testnet",
+        "blockExplorer": "https://mumbai.polygonscan.com",
+        "contractFactoryAddress": "0x951ef4D16aF66149628183fC4717c391e725CaCa",
+        "erc20Tokens": [
+            {
+                "address": "0x2d7882beDcbfDDce29Ba99965dd3cdF7fcB10A1e",
+                "title": "Test Token",
+                "symbol": "TST"
+            },
+            {
+                "address": "0xfe4F5145f6e09952a5ba9e956ED0C25e3Fa4c7F1",
+                "title": "Dummy ERC20",
+                "symbol": "DERC20"
+            }
+        ]
+    }
+}

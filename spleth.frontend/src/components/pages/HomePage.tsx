@@ -1,5 +1,5 @@
 import { useAppSelector } from '../../app/hooks'
-import { selectContractAddress, selectIsOwner } from '../../reducers/contractReducer'
+import { selectContractState } from '../../reducers/contractReducer'
 import Deposit from '../commands/Deposit'
 import Spend from '../commands/Spend'
 import Transactions from '../commands/Transactions'
@@ -10,23 +10,22 @@ import NewGroup from '../sections/NewGroup'
 import './HomePage.css';
 
 export default function HomePage() {
-    const selectedContractAddress = useAppSelector(selectContractAddress);
-    const isOwner = useAppSelector(selectIsOwner);
+    const state = useAppSelector(selectContractState);
 
     return (
-        <div className={`home ${selectedContractAddress !== undefined ? 'home--selected-address' : ''}`}>
+        <div className={`home ${state.group !== undefined ? 'home--selected-address' : ''}`}>
             <div className='home__groups container'>
                 <div className='container__title'>Groups</div>
                 <Groups />
             </div>
 
             <div className='home__group'>
-                {selectedContractAddress === null &&
+                {state.group === null &&
                     <>
                         <NewGroup />
                     </>
                 }
-                {selectedContractAddress &&
+                {state.group &&
                     <>
                         <Dashboard />
                         <div style={{ display: 'flex' }}>
@@ -39,7 +38,7 @@ export default function HomePage() {
                             </div>
                         </div>
 
-                        <Transactions />
+                        {/* <Transactions /> */}
                     </>
                 }
             </div>

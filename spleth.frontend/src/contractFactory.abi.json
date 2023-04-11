@@ -29,6 +29,11 @@
                 "internalType": "string",
                 "name": "title",
                 "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "ercAddress",
+                "type": "string"
             }
         ],
         "name": "createContract",

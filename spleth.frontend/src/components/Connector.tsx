@@ -8,9 +8,20 @@ import {
 } from 'wagmi';
 import { polygon, polygonMumbai } from 'wagmi/chains';
 import truncateEthAddress from '../utils/address';
+import { fetchGroupsAsync, setChainAction } from '../reducers/contractReducer';
+import { useAppDispatch } from '../app/hooks';
 
 export default function Connector() {
-    const { address, connector, isConnected } = useAccount();
+    const dispatch = useAppDispatch();
+
+    const { address, connector, isConnected } = useAccount({
+        onConnect() {
+            if (chain) {
+                dispatch(setChainAction(chain.id.toString()));
+                dispatch(fetchGroupsAsync());
+            }
+        }
+    });
     //const { data: ensAvatar, error: ensAvatarError } = useEnsAvatar({ address, chainId });
     //const { data: ensName, error: ensNameError } = useEnsName({ address, chainId });
     const { connect, connectors, error, isLoading, pendingConnector } = useConnect();

@@ -1,17 +1,17 @@
-import { useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractFactoryABI, selectContractFactoryAddress, setNeedFetchGroupsAction } from '../../reducers/contractReducer';
+import { fetchGroupsAsync, selectContractState } from '../../reducers/contractReducer';
 import './NewGroup.css';
 
 export default function NewGroup() {
     const { address: walletAddress } = useAccount();
 
     const dispatch = useAppDispatch();
-    const contractFactoryAddress = useAppSelector(selectContractFactoryAddress);
-    const contractFactoryABI = useAppSelector(selectContractFactoryABI);
+    const state = useAppSelector(selectContractState);
 
     const [title, setTitle] = useState<string>('');
+    const [selectedToken, setSelectedToken] = useState('');
     const [memberAddress, setMemberAddress] = useState<string>('');
     const [memberAddresses, setMemberAddresses] = useState<string[]>([walletAddress as string]);
 
@@ -20,11 +20,11 @@ export default function NewGroup() {
         error: prepareError,
         isError: isPrepareError
     } = usePrepareContractWrite({
-        address: contractFactoryAddress as any,
-        abi: contractFactoryABI,
+        address: state.contractFactoryAddress,
+        abi: state.contractFactoryABI,
         functionName: 'createContract',
-        args: [memberAddresses.filter(p => p != walletAddress), title],
-        enabled: !!(memberAddresses.length && title),
+        args: [memberAddresses.filter(p => p != walletAddress), title, selectedToken],
+        enabled: !!(memberAddresses.length && title && selectedToken),
         onError: (error) => console.error('createContract', error),
     });
     const { data, error, isError, write } = useContractWrite(config);
@@ -34,10 +34,9 @@ export default function NewGroup() {
             setTitle('');
             setMemberAddress('');
             setMemberAddresses([]);
-            dispatch(setNeedFetchGroupsAction(true));
+            dispatch(fetchGroupsAsync());
         },
     });
-
 
     const onAddClick = () => {
         if (!memberAddresses.includes(memberAddress)) {
@@ -60,6 +59,17 @@ export default function NewGroup() {
                     placeholder='Group Title'
                     style={{ flexGrow: 1 }}
                 />
+            </div>
+            <div style={{ display: 'flex' }}>
+                <select
+                    value={selectedToken}
+                    onChange={(e) => setSelectedToken(e.target.value)}
+                    style={{ flexGrow: 1 }}
+                >
+                    <option disabled hidden value="">Select token</option>
+                    {state.erc20Tokens.map(token =>
+                        <option key={token.address} value={token.address}>{token.title} ({token.symbol})</option>)}
+                </select>
             </div>
             <div style={{ display: 'flex' }}>
                 <input

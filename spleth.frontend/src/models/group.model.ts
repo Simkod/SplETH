@@ -1,9 +1,9 @@
 export class Group {
-    title: string;
-    address: string;
+    title: string | undefined | null;
+    address: `0x${string}`;
 
-    constructor(title: string, address: string) {
-        this.title = title;
+    constructor(address: `0x${string}`, title: string | undefined | null = null) {
         this.address = address;
+        this.title = title;
     }
 }

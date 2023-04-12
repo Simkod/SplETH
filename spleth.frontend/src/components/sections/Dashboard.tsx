@@ -30,7 +30,11 @@ export default function Dashboard() {
         functionName: 'getBalance',
         args: [address],
         onError: (error) => setBalance('***'),
-        onSuccess: (data: BigNumber) => setBalance(ethers.utils.formatUnits(data))
+        onSuccess: (data: BigNumber[]) => {
+            console.log('getBalance', ethers.utils.formatUnits(data[0]), ethers.utils.formatUnits(data[1]));
+
+            setBalance(ethers.utils.formatUnits(data[0]))
+        }
     });
 
     const { error: ownerError, isFetching: ownerIsFetching, isFetched: ownerIsFetched, refetch: ownerRefetch } = useContractRead({
@@ -90,7 +94,7 @@ export default function Dashboard() {
                             <div className='dashboard__pin-title'>Your Balance</div>
                             <div className='dashboard__pin-balance' title={balance}>
                                 {balance?.length > 3 ? Number(balance)?.toFixed(3) : balance} &nbsp;
-                                {balanceData?.symbol}
+                                {state.ercToken?.symbol}
                             </div>
                         </>}
                 </div>
@@ -101,7 +105,7 @@ export default function Dashboard() {
                             <div className='dashboard__pin-title'>Smart Contract Balance</div>
                             <div className='dashboard__pin-balance' title={balanceData?.formatted}>
                                 {balanceData?.formatted?.length > 3 ? Number(balanceData?.formatted)?.toFixed(3) : balanceData?.formatted} &nbsp;
-                                {balanceData?.symbol}
+                                {state.ercToken?.symbol}
                             </div>
                         </>}
                 </div>
@@ -111,7 +115,7 @@ export default function Dashboard() {
             {balanceIsError &&
                 <div className='container__error'>Error: {balanceError?.message}</div>}
 
-            {/* <Users /> */}
+            <Users />
         </div>
     )
 }

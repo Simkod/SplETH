@@ -3,37 +3,42 @@ import { AppThunk, RootState } from '../app/store';
 import _abiFactory from '../contractFactory.abi.json';
 import _abi from '../contract.abi.json';
 import _networks from '../contract.networks.json';
-import { GroupService } from '../services';
-import { Group, LoadStatusEnum } from '../models';
+import { ErcService, GroupService } from '../services';
+import { ERCToken, Group, LoadStatusEnum } from '../models';
 
 export interface ContractState {
+  contractFactoryAddress: `0x${string}`;
+  contractFactoryABI: any[];
   erc20Tokens: {address: string, title: string, symbol: string}[];
 
   groupsStatus: LoadStatusEnum;
   groups: Group[];
-  group: Group | undefined | null; // selected group
 
-  contractFactoryAddress: `0x${string}`;
-  contractFactoryABI: any[];
+  group: Group | undefined | null; // selected group
+  ercToken: ERCToken | null;
+  ercTokenStatus: LoadStatusEnum;
+
   contractAddress: `0x${string}` | undefined | null;
   contractABI: any[];
   isOwner: boolean;
 
   needFetchBalance: boolean;
   needFetchUsers: boolean;
-
 };
 
 const initialState: ContractState = {
+  contractFactoryAddress: '0x',
+  contractFactoryABI: _abiFactory,
   erc20Tokens: [],
 
   groupsStatus: LoadStatusEnum.idle,
   groups: [],
+
   group: undefined,
+  ercToken: null,
+  ercTokenStatus: LoadStatusEnum.idle,
 
   //
-  contractFactoryAddress: '0x',
-  contractFactoryABI: _abiFactory,
   contractAddress: undefined, // ?
   contractABI: _abi,
   isOwner: false,
@@ -42,18 +47,21 @@ const initialState: ContractState = {
   needFetchUsers: false,
 };
 
-// The function below is called a thunk and allows us to perform async logic. It
-// can be dispatched like a regular action: `dispatch(fetchGroupsAsync(10))`. This
-// will call the thunk with the `dispatch` function as the first argument. Async
-// code can then be executed and other actions can be dispatched. Thunks are
-// typically used to make async requests.
-export const fetchGroupsAsync = createAsyncThunk<Group[], void, { state: RootState}>(
+// Thunks
+export const fetchGroupsAsync = createAsyncThunk<Group[], void, { state: RootState }>(
   'contract/fetchGroups',
   async (_: void, thunkAPI) => {
     const state = thunkAPI.getState();
-    const response = await GroupService.load(state.contract);
+    const response = await GroupService.load(state.contract, thunkAPI.dispatch);
+    return response;
+  }
+);
 
-    // The value we return becomes the `fulfilled` action payload
+export const fetchERCTokenInfoAsync = createAsyncThunk<ERCToken | null, void, { state: RootState }>(
+  'contract/fetchERCTokenInfo',
+  async (_: void, thunkAPI) => {
+    const state = thunkAPI.getState();
+    const response = await ErcService.loadTokenInfoByGroup(state.contract);
     return response;
   }
 );
@@ -101,6 +109,17 @@ export const contractSlice = createSlice({
       })
       .addCase(fetchGroupsAsync.rejected, (state) => {
         state.groupsStatus = LoadStatusEnum.failed;
+      })
+
+      .addCase(fetchERCTokenInfoAsync.pending, (state) => {
+        state.ercTokenStatus = LoadStatusEnum.loading;
+      })
+      .addCase(fetchERCTokenInfoAsync.fulfilled, (state, action) => {
+        state.ercTokenStatus = LoadStatusEnum.loaded;
+        state.ercToken = action.payload;
+      })
+      .addCase(fetchERCTokenInfoAsync.rejected, (state) => {
+        state.ercTokenStatus = LoadStatusEnum.failed;
       });
   },
 });

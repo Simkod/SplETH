@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useContractRead, useAccount, readContracts } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, selectNeedFetchBalance, selectNeedFetchUsers, setNeedFetchUsersAction } from '../../reducers/contractReducer';
+import { selectContractState, selectNeedFetchBalance, selectNeedFetchUsers, setNeedFetchUsersAction } from '../../reducers/contractReducer';
 import truncateEthAddress from '../../utils/address';
 import Loader from '../shared/Loader';
 import AddUser from './AddUser';
@@ -10,9 +10,9 @@ import './Users.css';
 
 export default function Users() {
     const dispatch = useAppDispatch();
+    const state = useAppSelector(selectContractState);
+
     const needFetchUsers = useAppSelector(selectNeedFetchUsers);
-    const contractAddress = useAppSelector(selectContractAddress);
-    const contractABI = useAppSelector(selectContractABI);
     const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
     const [isFetchingGetBalance, setIsFetchingGetBalance] = useState<boolean>(false);
@@ -21,8 +21,8 @@ export default function Users() {
     const { address } = useAccount();
     const { error, isFetching: getAllUsersIsFetching, isFetched: getAllUsersIsFetched, refetch: refetchGetAllUsers } = useContractRead({
         enabled: false,
-        address: contractAddress as any,
-        abi: contractABI,
+        address: state.group?.address,
+        abi: state.contractABI,
         functionName: 'getAllUsers',
         onError: (error) => {
             setUsers([]);
@@ -37,7 +37,7 @@ export default function Users() {
     useEffect(() => {
         refetchGetAllUsers();
         dispatch(setNeedFetchUsersAction(false));
-    }, [contractAddress, needFetchUsers]);
+    }, [state.group?.address, needFetchUsers]);
 
     useEffect(() => {
         if (needFetchBalance) {
@@ -51,8 +51,8 @@ export default function Users() {
             const response = await readContracts({
                 contracts: userAddresses.map(address => {
                     return {
-                        address: contractAddress,
-                        abi: contractABI,
+                        address: state.group?.address,
+                        abi: state.contractABI,
                         functionName: 'getBalance',
                         args: [address],
                     } as any;
@@ -60,10 +60,10 @@ export default function Users() {
             });
 
             const _usersBalances: { address: string, balance?: string }[] = [];
-            (response as BigNumber[]).forEach((balance, index) => {
+            (response as BigNumber[][]).forEach((balance, index) => {
                 _usersBalances.push({
                     address: userAddresses[index],
-                    balance: ethers.utils.formatUnits(balance)
+                    balance: ethers.utils.formatUnits(balance[0])
                 });
             });
 

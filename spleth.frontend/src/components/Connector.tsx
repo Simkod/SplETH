@@ -15,10 +15,10 @@ export default function Connector() {
     const dispatch = useAppDispatch();
 
     const { address, connector, isConnected } = useAccount({
-        onConnect() {
+        async onConnect() {
             if (chain) {
-                dispatch(setChainAction(chain.id.toString()));
-                dispatch(fetchGroupsAsync());
+                await dispatch(setChainAction(chain.id.toString()));
+                await dispatch(fetchGroupsAsync());
             }
         }
     });

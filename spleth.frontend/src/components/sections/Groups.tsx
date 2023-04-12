@@ -1,12 +1,17 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractState, setGroupAction } from '../../reducers/contractReducer';
-import { LoadStatusEnum } from '../../models';
+import { fetchERCTokenInfoAsync, selectContractState, setGroupAction } from '../../reducers/contractReducer';
+import { Group, LoadStatusEnum } from '../../models';
 import Loader from '../shared/Loader';
 import './Groups.css';
 
 export default function Groups() {
     const dispatch = useAppDispatch();
     const state = useAppSelector(selectContractState);
+
+    const onSetGroupClick = async (group: Group) => {
+        await dispatch(setGroupAction(group));
+        await dispatch(fetchERCTokenInfoAsync());
+    };
 
     if (state.groupsStatus === LoadStatusEnum.loading)
         return (<Loader />);
@@ -25,7 +30,7 @@ export default function Groups() {
                     <div
                         key={group.address}
                         className={`groups__item button ${state.group?.address === group.address ? 'groups__item--selected' : ''}`}
-                        onClick={() => dispatch(setGroupAction(group))}
+                        onClick={() => onSetGroupClick(group)}
                     >
                         {group.title}
                     </div>

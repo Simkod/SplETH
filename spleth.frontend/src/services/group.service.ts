@@ -1,10 +1,11 @@
 import { readContract, readContracts, getAccount } from '@wagmi/core';
 import { ContractState } from '../reducers/contractReducer';
 import { Group } from '../models';
+import { Dispatch } from 'redux';
 
 export abstract class GroupService {
 
-    public static async load(state: ContractState): Promise<Group[]> {
+    public static async load(state: ContractState, dispach: Dispatch): Promise<Group[]> {
         const { address: currentWalletAddress } = getAccount();
 
         // get all contract addresses
@@ -12,7 +13,7 @@ export abstract class GroupService {
             address: state.contractFactoryAddress,
             abi: state.contractFactoryABI,
             functionName: 'getAllAddresses'
-        }) as string[]);
+        }) as `0x${string}`[]);
         console.log('factoryChildAddresses', factoryChildAddresses);
 
         // get all users for each smart contracts
@@ -26,7 +27,7 @@ export abstract class GroupService {
             })
         }) as [string[]]);
 
-        const _myGroupAddresses: string[] = [];
+        const _myGroupAddresses: `0x${string}`[] = [];
         usersForAllContracts.forEach((groupUsers, index) => {
             if (currentWalletAddress && groupUsers.includes(currentWalletAddress)) {
                 _myGroupAddresses.push(factoryChildAddresses[index]);

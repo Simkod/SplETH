@@ -11,7 +11,7 @@
         "contractFactoryAddress": "0x951ef4D16aF66149628183fC4717c391e725CaCa",
         "erc20Tokens": [
             {
-                "address": "0x2d7882beDcbfDDce29Ba99965dd3cdF7fcB10A1e",
+                "address": "0x39FA91D0F0A5519957A4047a7d3aaAEf66295529",
                 "title": "Test Token",
                 "symbol": "TST"
             },

@@ -8,28 +8,100 @@ import {
 } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import useDebounce from '../../hooks/useDebounce';
-import { selectContractABI, selectContractAddress, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { fetchERCTokenInfoAsync, selectContractState, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
+import _erc20ABI from '../../erc20.abi.json';
 
 export default function Deposit() {
     const dispatch = useAppDispatch();
-    const contractAddress = useAppSelector(selectContractAddress);
-    const contractABI = useAppSelector(selectContractABI);
+    const state = useAppSelector(selectContractState);
 
     const [amount, setAmount] = useState('');
     const [debouncedAmount] = useDebounce(amount);
 
     const { address } = useAccount();
+
+    // allowance
+    const {
+        config: configAllowance,
+        error: prepareErrorAllowance,
+        isError: isPrepareErrorAllowance
+    } = usePrepareContractWrite({
+        address: state.erc20Token?.address,
+        abi: _erc20ABI,
+        functionName: 'increaseAllowance',
+        enabled: state.erc20Token?.allowanceToSmartContract.isZero() && !!state.erc20Token?.address && !!amount,
+        args: [state.group?.address, amount ? ethers.utils.parseUnits(amount, 'ether') : 0],
+        onError: (error) => console.error('increaseAllowance', error),
+        onSuccess: (data) => console.log('increaseAllowance', data)
+    });
+    const {
+        data: dataAllowance,
+        error: errorAllowance,
+        isError: isErrorAllowance,
+        write: writeAllowance,
+        reset: resetAllowance
+    } = useContractWrite(configAllowance);
+    const {
+        isLoading: isLoadingAllowance,
+        isSuccess: isSuccessAllowance
+    } = useWaitForTransaction({
+        hash: dataAllowance?.hash,
+        onSuccess(data) {
+            dispatch(fetchERCTokenInfoAsync());
+            setTimeout(() => resetAllowance(), 5000);
+        },
+        onError: (error) => console.error('increaseAllowance useWaitForTransaction', error),
+    });
+    // end allowance
+
+
+    // depositERC
+    const {
+        config: configDepositERC,
+        error: prepareErrorDepositERC,
+        isError: isPrepareErrorDepositERC
+    } = usePrepareContractWrite({
+        address: state.group?.address,
+        abi: state.contractABI,
+        functionName: 'depositERC',
+        enabled: !!state.erc20Token && !state.erc20Token.allowanceToSmartContract.isZero() && !!amount,
+        args: [amount ? ethers.utils.parseUnits(amount, 'ether') : 0],
+        onError: (error) => console.error('depositERC', error),
+        onSuccess: (data) => console.log('depositERC', data)
+    });
+    const {
+        data: dataDepositERC,
+        error: errorDepositERC,
+        isError: isErrorDepositERC,
+        write: writeDepositERC,
+        reset: resetDepositERC
+    } = useContractWrite(configDepositERC);
+    const {
+        isLoading: isLoadingDepositERC,
+        isSuccess: isSuccessDepositERC
+    } = useWaitForTransaction({
+        hash: dataDepositERC?.hash,
+        onSuccess(data) {
+            setAmount('');
+            dispatch(fetchERCTokenInfoAsync());
+            setTimeout(() => resetDepositERC(), 5000);
+        }
+    });
+    // end depositERC
+
+
+
     const {
         config,
         error: prepareError,
         isError: isPrepareError
     } = usePrepareContractWrite({
-        address: contractAddress as any,
-        abi: contractABI,
+        address: state.group?.address,
+        abi: state.contractABI,
         functionName: 'deposit',
-        enabled: Boolean(debouncedAmount),
+        enabled: !state.erc20Token && !!amount,
         overrides: {
             from: address,
             value: amount ? ethers.utils.parseEther(amount) : undefined
@@ -44,16 +116,19 @@ export default function Deposit() {
             setAmount('');
             dispatch(setNeedFetchBalanceAction(true));
 
-            setTimeout(() => {
-                reset();
-            }, 5000);
+            setTimeout(() => reset(), 5000);
         }
     });
+
+    const allowance = state.erc20Token && ethers.utils.formatUnits(state.erc20Token.allowanceToSmartContract);
 
     return (
         <>
             <div className='container'>
                 <div className='container__title'>Deposit</div>
+                <div>
+                    {allowance}
+                </div>
                 <div style={{ display: 'flex' }}>
                     <input
                         type='text'
@@ -62,9 +137,18 @@ export default function Deposit() {
                         value={amount}
                         style={{ flexGrow: 1 }}
                     />
-                    <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
-                        {isLoading ? 'Sending...' : 'Deposit'}
-                    </button>
+                    {state.erc20Token?.allowanceToSmartContract.isZero() &&
+                        <button disabled={isLoadingAllowance || !writeAllowance || !amount} onClick={() => writeAllowance?.()}>
+                            {isLoadingAllowance ? 'Allowing...' : 'Allowance'}
+                        </button>}
+                    {!state.erc20Token?.allowanceToSmartContract.isZero() &&
+                        <button disabled={isLoadingDepositERC || !writeDepositERC || !amount} onClick={() => writeDepositERC?.()}>
+                            {isLoadingDepositERC ? 'Sending...' : 'Deposit'}
+                        </button>}
+                    {false &&
+                        <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
+                            {isLoading ? 'Sending...' : 'Deposit'}
+                        </button>}
                 </div>
                 <div>
                     {isSuccess && (

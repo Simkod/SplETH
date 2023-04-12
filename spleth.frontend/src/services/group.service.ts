@@ -14,7 +14,6 @@ export abstract class GroupService {
             abi: state.contractFactoryABI,
             functionName: 'getAllAddresses'
         }) as `0x${string}`[]);
-        console.log('factoryChildAddresses', factoryChildAddresses);
 
         // get all users for each smart contracts
         const usersForAllContracts = (await readContracts({
@@ -53,7 +52,7 @@ export abstract class GroupService {
             });
         });
 
-        console.log('myGroups', _myGroups);
+        console.log('factoryChildAddresses', factoryChildAddresses, 'myGroups', _myGroups);
 
         return _myGroups;
     }

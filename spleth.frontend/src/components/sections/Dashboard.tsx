@@ -31,9 +31,7 @@ export default function Dashboard() {
         args: [address],
         onError: (error) => setBalance('***'),
         onSuccess: (data: BigNumber[]) => {
-            console.log('getBalance', ethers.utils.formatUnits(data[0]), ethers.utils.formatUnits(data[1]));
-
-            setBalance(ethers.utils.formatUnits(data[0]))
+            setBalance(ethers.utils.formatUnits(data[1]))
         }
     });
 
@@ -94,7 +92,7 @@ export default function Dashboard() {
                             <div className='dashboard__pin-title'>Your Balance</div>
                             <div className='dashboard__pin-balance' title={balance}>
                                 {balance?.length > 3 ? Number(balance)?.toFixed(3) : balance} &nbsp;
-                                {state.ercToken?.symbol}
+                                {state.erc20Token?.symbol}
                             </div>
                         </>}
                 </div>
@@ -105,7 +103,7 @@ export default function Dashboard() {
                             <div className='dashboard__pin-title'>Smart Contract Balance</div>
                             <div className='dashboard__pin-balance' title={balanceData?.formatted}>
                                 {balanceData?.formatted?.length > 3 ? Number(balanceData?.formatted)?.toFixed(3) : balanceData?.formatted} &nbsp;
-                                {state.ercToken?.symbol}
+                                {state.erc20Token?.symbol}
                             </div>
                         </>}
                 </div>

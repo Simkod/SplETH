@@ -1,11 +1,13 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import contractReducer from '../reducers/contractReducer';
-//import contractReducer from '@reducers/contractReducer';
 
 export const store = configureStore({
   reducer: {
     contract: contractReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  }),
 });
 
 export type AppDispatch = typeof store.dispatch;

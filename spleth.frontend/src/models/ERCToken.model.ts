@@ -1,9 +1,10 @@
-export class ERCToken {
-    address: `0x${string}`;
-    symbol: string;
+import { BigNumber } from 'ethers';
 
-    constructor(address: `0x${string}`, symbol: string) {
-        this.address = address;
-        this.symbol = symbol;
+export class ERCToken {
+    constructor(
+        public address: `0x${string}`,
+        public symbol: string,
+        public allowanceToSmartContract: BigNumber
+    ) {
     }
 }

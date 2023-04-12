@@ -15,8 +15,8 @@ export interface ContractState {
   groups: Group[];
 
   group: Group | undefined | null; // selected group
-  ercToken: ERCToken | null;
-  ercTokenStatus: LoadStatusEnum;
+  erc20Token: ERCToken | null;
+  erc20TokenStatus: LoadStatusEnum;
 
   contractAddress: `0x${string}` | undefined | null;
   contractABI: any[];
@@ -35,8 +35,8 @@ const initialState: ContractState = {
   groups: [],
 
   group: undefined,
-  ercToken: null,
-  ercTokenStatus: LoadStatusEnum.idle,
+  erc20Token: null,
+  erc20TokenStatus: LoadStatusEnum.idle,
 
   //
   contractAddress: undefined, // ?
@@ -112,14 +112,14 @@ export const contractSlice = createSlice({
       })
 
       .addCase(fetchERCTokenInfoAsync.pending, (state) => {
-        state.ercTokenStatus = LoadStatusEnum.loading;
+        state.erc20TokenStatus = LoadStatusEnum.loading;
       })
       .addCase(fetchERCTokenInfoAsync.fulfilled, (state, action) => {
-        state.ercTokenStatus = LoadStatusEnum.loaded;
-        state.ercToken = action.payload;
+        state.erc20TokenStatus = LoadStatusEnum.loaded;
+        state.erc20Token = action.payload;
       })
       .addCase(fetchERCTokenInfoAsync.rejected, (state) => {
-        state.ercTokenStatus = LoadStatusEnum.failed;
+        state.erc20TokenStatus = LoadStatusEnum.failed;
       });
   },
 });

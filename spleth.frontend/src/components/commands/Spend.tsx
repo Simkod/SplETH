@@ -2,14 +2,13 @@ import { ethers } from 'ethers';
 import { ChangeEvent, useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { selectContractState, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
 
 export default function Spend() {
     const dispatch = useAppDispatch();
-    const contractAddress = useAppSelector(selectContractAddress);
-    const contractABI = useAppSelector(selectContractABI);
+    const state = useAppSelector(selectContractState);
 
     const [amount, setAmount] = useState<string>('');
     const [comment, setComment] = useState<string>('');
@@ -20,8 +19,8 @@ export default function Spend() {
         error: prepareError,
         isError: isPrepareError
     } = usePrepareContractWrite({
-        address: contractAddress as any,
-        abi: contractABI,
+        address: state.group?.address,
+        abi: state.contractABI,
         functionName: 'spend',
         args: [
             isNumeric(amount) && amount ? ethers.utils.parseEther(amount as string) : undefined,
@@ -40,9 +39,7 @@ export default function Spend() {
             setRecipientAddress('');
             dispatch(setNeedFetchBalanceAction(true));
 
-            setTimeout(() => {
-                reset();
-            }, 5000);
+            setTimeout(() => reset(), 5000);
         },
     });
 

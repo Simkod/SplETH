@@ -1,14 +1,13 @@
 import { AssetTransfersCategory, AssetTransfersResult } from 'alchemy-sdk';
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, selectNeedFetchBalance } from '../../reducers/contractReducer';
+import { selectContractState, selectNeedFetchBalance } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 import Loader from '../shared/Loader';
 import './Transactions.css';
 
 export default function Transactions() {
-    const contractAddress = useAppSelector(selectContractAddress);
-    const contractABI = useAppSelector(selectContractABI);
+    const state = useAppSelector(selectContractState);
     const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
     const [isFetchingTransfers, setIsFetchingTransfers] = useState<boolean>(false);
@@ -20,12 +19,12 @@ export default function Transactions() {
             try {
                 const data = await window.alchemy.core.getAssetTransfers({
                     //fromBlock: "0x0",
-                    //fromAddress: contractAddress,
-                    toAddress: contractAddress as any,
+                    //fromAddress: ,
+                    toAddress: state.group?.address,
                     category: [AssetTransfersCategory.EXTERNAL, AssetTransfersCategory.ERC20, AssetTransfersCategory.ERC721, AssetTransfersCategory.ERC1155, AssetTransfersCategory.SPECIALNFT],
                     excludeZeroValue: false
                 });
-                console.log('alchemy.core.getAssetTransfers', contractAddress, data);
+                console.log('alchemy.core.getAssetTransfers', state.group?.address, data);
                 setTransactions(data.transfers.reverse());
             } catch (error) {
                 console.error('alchemy.core.getAssetTransfers', error);
@@ -34,7 +33,7 @@ export default function Transactions() {
         };
 
         getTransactions();
-    }, [contractAddress, needFetchBalance]);
+    }, [state.group?.address, needFetchBalance]);
 
     return (
         <div className='container transactions'>

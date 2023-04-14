@@ -1,14 +1,12 @@
 import { useState } from 'react';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractAddress, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { selectContractState, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
-import Deposit from './Deposit';
 
 export default function Withdraw() {
     const dispatch = useAppDispatch();
-    const contractAddress = useAppSelector(selectContractAddress);
-    const contractABI = useAppSelector(selectContractABI);
+    const state = useAppSelector(selectContractState);
 
     const [isReady, setIsReady] = useState(false);
 
@@ -18,8 +16,8 @@ export default function Withdraw() {
         isError: isPrepareError
     } = usePrepareContractWrite({
         enabled: isReady,
-        address: contractAddress as any,
-        abi: contractABI,
+        address: state.group?.address,
+        abi: state.contractABI,
         functionName: 'withdraw',
         onError: (error) => console.error('withdraw', error),
     });
@@ -29,9 +27,7 @@ export default function Withdraw() {
         onSuccess(data) {
             dispatch(setNeedFetchBalanceAction(true));
 
-            setTimeout(() => {
-                reset();
-            }, 5000);
+            setTimeout(() => reset(), 5000);
         }
     });
 
@@ -68,7 +64,6 @@ export default function Withdraw() {
                     </div>
                 )}
             </div>
-
 
         </div>
     )

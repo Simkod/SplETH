@@ -1,29 +1,27 @@
 import { useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import useDebounce from '../../hooks/useDebounce';
-import { selectContractABI, selectContractAddress, selectIsOwner, setNeedFetchUsersAction } from '../../reducers/contractReducer';
+import { selectContractState, selectIsOwner, setNeedFetchUsersAction } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 
 export default function AddUser() {
     const dispatch = useAppDispatch();
-    const contractAddress = useAppSelector(selectContractAddress);
-    const contractABI = useAppSelector(selectContractABI);
+    const state = useAppSelector(selectContractState);
+
     const isOwner = useAppSelector(selectIsOwner);
 
     const [newUserAddress, setNewUserAddress] = useState('');
-    const debouncedUserAddress = useDebounce(newUserAddress);
 
     const {
         config,
         error: prepareError,
         isError: isPrepareError
     } = usePrepareContractWrite({
-        address: contractAddress as any,
-        abi: contractABI,
+        address: state.group?.address,
+        abi: state.contractABI,
         functionName: 'addUser',
-        args: [debouncedUserAddress],
-        enabled: Boolean(debouncedUserAddress),
+        args: [newUserAddress],
+        enabled: !!newUserAddress,
         onError: (error) => console.error('addUser', error),
     });
     const { data, error, isError, write, reset } = useContractWrite(config);
@@ -33,9 +31,7 @@ export default function AddUser() {
             setNewUserAddress('');
             dispatch(setNeedFetchUsersAction(true));
 
-            setTimeout(() => {
-                reset();
-            }, 5000);
+            setTimeout(() => reset(), 5000);
         },
     });
 

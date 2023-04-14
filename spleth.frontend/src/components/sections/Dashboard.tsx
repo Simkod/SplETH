@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { useAccount, useBalance, useContractRead } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractABI, selectContractState, selectNeedFetchBalance, setIsOwnerAction, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { selectContractState, selectNeedFetchBalance, setIsOwnerAction, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import truncateEthAddress from '../../utils/address';
 import Users from '../commands/Users';
 import Emoji from '../shared/Emoji';
@@ -13,20 +13,19 @@ export default function Dashboard() {
     const dispatch = useAppDispatch();
     const state = useAppSelector(selectContractState);
 
-    const selectedContractABI = useAppSelector(selectContractABI);
     const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
     const [balance, setBalance] = useState<string>('');
     const [owner, setOwner] = useState<string>('');
 
     const { data: balanceData, isError: balanceIsError, error: balanceError, isLoading: balanceIsLoading, refetch: contractBalanceRefetch } = useBalance({
-        address: state.group?.address as any,
+        address: state.group?.address,
     });
 
     const { address } = useAccount();
     const { error, isFetching: userContractBalanceIsFetching, isFetched: userContractBalanceIsFetched, refetch: userContractBalanceRefetch } = useContractRead({
-        address: state.group?.address as any,
-        abi: selectedContractABI,
+        address: state.group?.address,
+        abi: state.contractABI,
         functionName: 'getBalance',
         args: [address],
         onError: (error) => setBalance('***'),
@@ -36,8 +35,8 @@ export default function Dashboard() {
     });
 
     const { error: ownerError, isFetching: ownerIsFetching, isFetched: ownerIsFetched, refetch: ownerRefetch } = useContractRead({
-        address: state.group?.address as any,
-        abi: selectedContractABI,
+        address: state.group?.address,
+        abi: state.contractABI,
         functionName: 'owner',
         onError: (error) => {
             setOwner('');

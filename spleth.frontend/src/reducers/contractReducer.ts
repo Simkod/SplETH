@@ -18,7 +18,6 @@ export interface ContractState {
   erc20Token: ERCToken | null;
   erc20TokenStatus: LoadStatusEnum;
 
-  contractAddress: `0x${string}` | undefined | null;
   contractABI: any[];
   isOwner: boolean;
 
@@ -39,7 +38,6 @@ const initialState: ContractState = {
   erc20TokenStatus: LoadStatusEnum.idle,
 
   //
-  contractAddress: undefined, // ?
   contractABI: _abi,
   isOwner: false,
 
@@ -139,8 +137,6 @@ export const {
 // in the slice file. For example: `useSelector((state: RootState) => state.contract.value)`
 export const selectContractState = (state: RootState) => state.contract;
 
-export const selectContractAddress = (state: RootState) => state.contract.contractAddress;
-export const selectContractABI = (state: RootState) => state.contract.contractABI;
 export const selectIsOwner = (state: RootState) => state.contract.isOwner;
 
 export const selectNeedFetchBalance = (state: RootState) => state.contract.needFetchBalance;

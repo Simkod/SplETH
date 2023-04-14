@@ -63,7 +63,7 @@ export default function Users() {
             (response as BigNumber[][]).forEach((balance, index) => {
                 _usersBalances.push({
                     address: userAddresses[index],
-                    balance: ethers.utils.formatUnits(balance[0])
+                    balance: state.erc20Token ? ethers.utils.formatUnits(balance[1]) : ethers.utils.formatUnits(balance[0])
                 });
             });
 

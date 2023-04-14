@@ -7,7 +7,6 @@ import {
     useWaitForTransaction,
 } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import useDebounce from '../../hooks/useDebounce';
 import { fetchERCTokenInfoAsync, selectContractState, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
@@ -18,7 +17,6 @@ export default function Deposit() {
     const state = useAppSelector(selectContractState);
 
     const [amount, setAmount] = useState('');
-    const [debouncedAmount] = useDebounce(amount);
 
     const { address } = useAccount();
 
@@ -57,6 +55,7 @@ export default function Deposit() {
     // end allowance
 
 
+
     // depositERC
     const {
         config: configDepositERC,
@@ -93,6 +92,7 @@ export default function Deposit() {
 
 
 
+    // deposit native token
     const {
         config,
         error: prepareError,
@@ -119,6 +119,7 @@ export default function Deposit() {
             setTimeout(() => reset(), 5000);
         }
     });
+    // end
 
     const allowance = state.erc20Token && ethers.utils.formatUnits(state.erc20Token.allowanceToSmartContract);
 
@@ -126,9 +127,10 @@ export default function Deposit() {
         <>
             <div className='container'>
                 <div className='container__title'>Deposit</div>
-                <div>
-                    {allowance}
-                </div>
+                {!state.erc20Token?.allowanceToSmartContract.isZero() &&
+                    <div>
+                        You are allowed to deposit {allowance} {state.erc20Token?.symbol}
+                    </div>}
                 <div style={{ display: 'flex' }}>
                     <input
                         type='text'

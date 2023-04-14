@@ -14,6 +14,8 @@ export default function Spend() {
     const [comment, setComment] = useState<string>('');
     const [recipientAddress, setRecipientAddress] = useState<`0x${string}` | undefined | string>('');
 
+    const functionName = state.erc20Token ? 'spendERC' : 'spend';
+
     const {
         config,
         error: prepareError,
@@ -21,14 +23,14 @@ export default function Spend() {
     } = usePrepareContractWrite({
         address: state.group?.address,
         abi: state.contractABI,
-        functionName: 'spend',
+        functionName: functionName,
         args: [
             isNumeric(amount) && amount ? ethers.utils.parseEther(amount as string) : undefined,
             recipientAddress,
             comment
         ],
         enabled: !!amount && !!recipientAddress,
-        onError: (error) => console.error('spend', error),
+        onError: (error) => console.error(functionName, error),
     });
     const { data, error, isError, write, reset } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({

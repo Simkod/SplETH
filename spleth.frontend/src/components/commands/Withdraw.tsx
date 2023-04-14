@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractState, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { fetchBalanceAsync, selectContractState } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 
 export default function Withdraw() {
@@ -25,7 +25,7 @@ export default function Withdraw() {
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
         onSuccess(data) {
-            dispatch(setNeedFetchBalanceAction(true));
+            dispatch(fetchBalanceAsync());
 
             setTimeout(() => reset(), 5000);
         }

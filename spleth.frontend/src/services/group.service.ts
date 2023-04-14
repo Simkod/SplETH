@@ -1,6 +1,6 @@
 import { readContract, readContracts, getAccount } from '@wagmi/core';
 import { ContractState } from '../reducers/contractReducer';
-import { Group } from '../models';
+import { Group, User } from '../models';
 import { Dispatch } from 'redux';
 
 export abstract class GroupService {
@@ -55,5 +55,15 @@ export abstract class GroupService {
         console.log('factoryChildAddresses', factoryChildAddresses, 'myGroups', _myGroups);
 
         return _myGroups;
+    }
+
+    public static async loadUsers(state: ContractState): Promise<User[]> {
+        const usersAddresses = (await readContract<string[], string>({
+            address: state.group?.address as any,
+            abi: state.contractABI,
+            functionName: 'getAllUsers'
+        }) as `0x${string}`[]);
+
+        return usersAddresses.map(p => new User(p, undefined));
     }
 }

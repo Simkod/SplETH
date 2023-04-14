@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractState, selectIsOwner, setNeedFetchUsersAction } from '../../reducers/contractReducer';
+import { fetchUsersAsync, selectContractState, selectIsOwner } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 
 export default function AddUser() {
@@ -29,7 +29,7 @@ export default function AddUser() {
         hash: data?.hash,
         onSuccess(data) {
             setNewUserAddress('');
-            dispatch(setNeedFetchUsersAction(true));
+            dispatch(fetchUsersAsync());
 
             setTimeout(() => reset(), 5000);
         },

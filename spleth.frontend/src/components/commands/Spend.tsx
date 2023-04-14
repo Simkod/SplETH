@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { ChangeEvent, useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { selectContractState, setNeedFetchBalanceAction } from '../../reducers/contractReducer';
+import { fetchBalanceAsync, selectContractState } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
 
@@ -39,7 +39,7 @@ export default function Spend() {
             setAmount('');
             setComment('');
             setRecipientAddress('');
-            dispatch(setNeedFetchBalanceAction(true));
+            dispatch(fetchBalanceAsync());
 
             setTimeout(() => reset(), 5000);
         },

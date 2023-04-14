@@ -1,14 +1,13 @@
 import { AssetTransfersCategory, AssetTransfersResult } from 'alchemy-sdk';
 import { useEffect, useState } from 'react'
 import { useAppSelector } from '../../app/hooks';
-import { selectContractState, selectNeedFetchBalance } from '../../reducers/contractReducer';
+import { selectContractState } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 import Loader from '../shared/Loader';
 import './Transactions.css';
 
 export default function Transactions() {
     const state = useAppSelector(selectContractState);
-    const needFetchBalance = useAppSelector(selectNeedFetchBalance);
 
     const [isFetchingTransfers, setIsFetchingTransfers] = useState<boolean>(false);
     const [transactions, setTransactions] = useState<AssetTransfersResult[]>([]);
@@ -33,7 +32,7 @@ export default function Transactions() {
         };
 
         getTransactions();
-    }, [state.group?.address, needFetchBalance]);
+    }, [state.group?.address]);
 
     return (
         <div className='container transactions'>

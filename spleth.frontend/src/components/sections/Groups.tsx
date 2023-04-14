@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchERCTokenInfoAsync, selectContractState, setGroupAction } from '../../reducers/contractReducer';
+import { fetchBalanceAsync, fetchERCTokenInfoAsync, selectContractState, setGroupAction } from '../../reducers/contractReducer';
 import { Group, LoadStatusEnum } from '../../models';
 import Loader from '../shared/Loader';
 import './Groups.css';
@@ -11,6 +11,7 @@ export default function Groups() {
     const onSetGroupClick = async (group: Group) => {
         await dispatch(setGroupAction(group));
         await dispatch(fetchERCTokenInfoAsync());
+        await dispatch(fetchBalanceAsync());
     };
 
     if (state.groupsStatus === LoadStatusEnum.loading)

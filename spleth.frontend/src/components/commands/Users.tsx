@@ -1,8 +1,7 @@
-import { BigNumber, ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
 import { useAccount } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchUsersAsync, fetchUsersBalanceAsync, selectContractState } from '../../reducers/contractReducer';
+import { selectContractState } from '../../reducers/contractReducer';
 import truncateEthAddress from '../../utils/address';
 import Loader from '../shared/Loader';
 import AddUser from './AddUser';
@@ -15,15 +14,6 @@ export default function Users() {
 
     const { address } = useAccount();
 
-    useEffect(() => {
-        const load = async () => {
-            await dispatch(fetchUsersAsync());
-            await dispatch(fetchUsersBalanceAsync());
-        }
-
-        load();
-    }, [state.group?.address]);
-
     return (
         <div className='users'>
             {state.usersStatus === LoadStatusEnum.loading && <Loader />}
@@ -31,7 +21,7 @@ export default function Users() {
                 <>
                     <div style={{ display: 'flex' }}>
                         <div className='users__title'>
-                            {state.users.length ? `${state.users.length} Members` : 'Member list is empty'}
+                            {state.usersStatus === LoadStatusEnum.idle ? '' : state.users.length ? `${state.users.length} Members` : 'Member list is empty'}
                         </div>
                         <div className='users__title-balance'>
                             Balance

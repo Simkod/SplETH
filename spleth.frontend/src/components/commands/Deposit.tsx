@@ -7,7 +7,7 @@ import {
     useWaitForTransaction,
 } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchBalanceAsync, fetchERCTokenInfoAsync, selectContractState } from '../../reducers/contractReducer';
+import { fetchBalanceAsync, fetchERCTokenInfoAsync, fetchUsersBalanceAsync, selectContractState } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
 import _erc20ABI from '../../erc20.abi.json';
@@ -115,6 +115,7 @@ export default function Deposit() {
         onSuccess(data) {
             setAmount('');
             dispatch(fetchBalanceAsync());
+            dispatch(fetchUsersBalanceAsync());
 
             setTimeout(() => reset(), 5000);
         }

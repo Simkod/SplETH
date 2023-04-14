@@ -17,7 +17,6 @@ export interface ContractState {
 
   group: Group | undefined | null; // selected group
   erc20Token: ERCToken | null;
-  erc20TokenStatus: LoadStatusEnum;
 
   balanceStatus: LoadStatusEnum;
   balanceWallet: BigNumber;
@@ -41,7 +40,6 @@ const initialState: ContractState = {
 
   group: undefined,
   erc20Token: null,
-  erc20TokenStatus: LoadStatusEnum.idle,
 
   balanceStatus: LoadStatusEnum.idle,
   balanceWallet: BigNumber.from(0),
@@ -61,7 +59,14 @@ export const fetchGroupsAsync = createAsyncThunk<Group[], void, { state: RootSta
 );
 
 export const fetchERCTokenInfoAsync = createAsyncThunk<ERCToken | null, void, { state: RootState }>('contract/fetchERCTokenInfo',
-  (_: void, thunkAPI) => ErcService.loadTokenInfoByGroup(thunkAPI.getState().contract)
+  async (_: void, thunkAPI) => {
+    const erc = await ErcService.loadTokenInfoByGroup(thunkAPI.getState().contract);
+    thunkAPI.dispatch(fetchERCTokenMoreInfoAsync(erc));
+    return erc;
+  });
+
+export const fetchERCTokenMoreInfoAsync = createAsyncThunk<ERCToken | null, ERCToken | null, { state: RootState }>('contract/fetchERCTokenMoreInfoAsync',
+  (erc, thunkAPI) => ErcService.loadMoreTokenInfo(thunkAPI.getState().contract, erc)
 );
 
 export const fetchBalanceAsync = createAsyncThunk<BalanceResponse, void, { state: RootState }>('contract/fetchBalanceAsync',
@@ -120,15 +125,11 @@ export const contractSlice = createSlice({
         state.groupsStatus = LoadStatusEnum.failed;
       })
 
-      .addCase(fetchERCTokenInfoAsync.pending, (state) => {
-        state.erc20TokenStatus = LoadStatusEnum.loading;
-      })
       .addCase(fetchERCTokenInfoAsync.fulfilled, (state, action) => {
-        state.erc20TokenStatus = LoadStatusEnum.loaded;
         state.erc20Token = action.payload;
       })
-      .addCase(fetchERCTokenInfoAsync.rejected, (state) => {
-        state.erc20TokenStatus = LoadStatusEnum.failed;
+      .addCase(fetchERCTokenMoreInfoAsync.fulfilled, (state, action) => {
+        state.erc20Token = action.payload;
       })
 
       .addCase(fetchBalanceAsync.pending, (state) => {

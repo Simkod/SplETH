@@ -3,8 +3,8 @@ import { BigNumber } from 'ethers';
 export class ERCToken {
     constructor(
         public address: `0x${string}`,
-        public symbol: string,
-        public allowanceToSmartContract: BigNumber
+        public symbol: string = '',
+        public allowanceToSmartContract: BigNumber = BigNumber.from(0)
     ) {
     }
 }

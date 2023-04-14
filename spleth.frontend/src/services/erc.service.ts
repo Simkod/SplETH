@@ -21,29 +21,38 @@ export abstract class ErcService {
             functionName: 'tokenAddress'
         }) as `0x${string}` | undefined);
 
-        if (tokenAddress) {
+        return tokenAddress ? new ERCToken(tokenAddress) : null;
+    }
+
+    public static async loadMoreTokenInfo(state: ContractState, ercToken: ERCToken | null): Promise<ERCToken | null> {
+        const { address: walletAddress } = getAccount();
+
+        if (!walletAddress || !state.group?.address)
+            return null;
+
+        if (ercToken?.address) {
             const symbol = await readContract({
-                address: tokenAddress,
+                address: ercToken.address,
                 abi: erc20ABI,
                 functionName: 'symbol'
             });
 
             const allowance = await readContract({
-                address: tokenAddress,
+                address: ercToken.address,
                 abi: erc20ABI,
                 functionName: 'allowance',
-                args: [walletAddress, smartContractAddress]
+                args: [walletAddress, state.group.address]
             });
 
             return {
-                address: tokenAddress,
+                address: ercToken.address,
                 symbol: symbol,
                 allowanceToSmartContract: allowance
             }
         }
 
         return null;
-    }
+      }
 
     public static async loadAllowance(state: ContractState, tokenAddress: `0x${string}`): Promise<BigNumber> {
 

@@ -1,5 +1,5 @@
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchBalanceAsync, fetchERCTokenInfoAsync, selectContractState, setGroupAction } from '../../reducers/contractReducer';
+import { fetchBalanceAsync, fetchERCTokenInfoAsync, fetchUsersAsync, fetchUsersBalanceAsync, selectContractState, setGroupAction } from '../../reducers/contractReducer';
 import { Group, LoadStatusEnum } from '../../models';
 import Loader from '../shared/Loader';
 import './Groups.css';
@@ -11,7 +11,11 @@ export default function Groups() {
     const onSetGroupClick = async (group: Group) => {
         await dispatch(setGroupAction(group));
         await dispatch(fetchERCTokenInfoAsync());
-        await dispatch(fetchBalanceAsync());
+        dispatch(fetchBalanceAsync());
+        (async () => {
+            await dispatch(fetchUsersAsync());
+            await dispatch(fetchUsersBalanceAsync());
+        })();
     };
 
     if (state.groupsStatus === LoadStatusEnum.loading)
@@ -37,11 +41,6 @@ export default function Groups() {
                     </div>
                 )}
             </div>
-
-            {/* {error &&
-                <div className='container__error'>
-                    {error.message}
-                </div>} */}
         </div>
     )
 }

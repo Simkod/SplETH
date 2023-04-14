@@ -38,7 +38,7 @@ export default function HomePage() {
                             </div>
                         </div>
 
-                        {/* <Transactions /> */}
+                        <Transactions />
                     </>
                 }
             </div>

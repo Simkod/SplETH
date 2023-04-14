@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchBalanceAsync, selectContractState } from '../../reducers/contractReducer';
+import { fetchBalanceAsync, fetchUsersBalanceAsync, selectContractState } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 
 export default function Withdraw() {
@@ -9,6 +9,8 @@ export default function Withdraw() {
     const state = useAppSelector(selectContractState);
 
     const [isReady, setIsReady] = useState(false);
+
+    const functionName = state.erc20Token ? 'withdrawERC' : 'withdraw';
 
     const {
         config,
@@ -18,14 +20,15 @@ export default function Withdraw() {
         enabled: isReady,
         address: state.group?.address,
         abi: state.contractABI,
-        functionName: 'withdraw',
-        onError: (error) => console.error('withdraw', error),
+        functionName: functionName,
+        onError: (error) => console.error(functionName, error),
     });
     const { data, error, isError, write, reset } = useContractWrite(config);
     const { isLoading, isSuccess } = useWaitForTransaction({
         hash: data?.hash,
         onSuccess(data) {
             dispatch(fetchBalanceAsync());
+            dispatch(fetchUsersBalanceAsync());
 
             setTimeout(() => reset(), 5000);
         }

@@ -8,6 +8,7 @@ import { ERCToken, Group, LoadStatusEnum, User } from '../models';
 import { BigNumber } from 'ethers';
 
 export interface ContractState {
+  sponsored: boolean;
   contractFactoryAddress: `0x${string}`;
   contractFactoryABI: any[];
   erc20Tokens: {address: string, title: string, symbol: string}[];
@@ -31,6 +32,7 @@ export interface ContractState {
 };
 
 const initialState: ContractState = {
+  sponsored: false,
   contractFactoryAddress: '0x',
   contractFactoryABI: _abiFactory,
   erc20Tokens: [],
@@ -97,6 +99,7 @@ export const contractSlice = createSlice({
       if (!network)
         return;
 
+      state.sponsored = network.sponsored;
       state.contractFactoryAddress = network.contractFactoryAddress;
       state.erc20Tokens = network.erc20Tokens;
     },
@@ -182,8 +185,6 @@ export const {
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.contract.value)`
 export const selectContractState = (state: RootState) => state.contract;
-
-export const selectIsOwner = (state: RootState) => state.contract.isOwner;
 
 // We can also write thunks by hand, which may contain both sync and async logic.
 // Here's an example of conditionally dispatching actions based on current state.

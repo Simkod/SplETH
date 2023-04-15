@@ -1,8 +1,11 @@
-import { ChangeEvent, useState } from 'react'
-import { useAccount, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { ChangeEvent, useState } from 'react';
+import { useAccount, useContractWrite, useNetwork, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { fetchGroupsAsync, selectContractState } from '../../reducers/contractReducer';
 import './NewGroup.css';
+
+import { GelatoRelay, SponsoredCallRequest } from "@gelatonetwork/relay-sdk";
+import { ethers } from 'ethers';
 
 export default function NewGroup() {
     const { address: walletAddress } = useAccount();
@@ -14,7 +17,11 @@ export default function NewGroup() {
     const [selectedToken, setSelectedToken] = useState('');
     const [memberAddress, setMemberAddress] = useState<string>('');
     const [memberAddresses, setMemberAddresses] = useState<string[]>([walletAddress as string]);
+    const [sponsorLoading, setSponsorLoading] = useState(false);
 
+    const { chain } = useNetwork();
+
+    // create by user wallet
     const {
         config,
         error: prepareError,
@@ -24,7 +31,7 @@ export default function NewGroup() {
         abi: state.contractFactoryABI,
         functionName: 'createContract',
         args: [memberAddresses.filter(p => p != walletAddress), title, selectedToken],
-        enabled: !!(memberAddresses.length && title && selectedToken),
+        enabled: !state.sponsored && !!(memberAddresses.length && title && selectedToken),
         onError: (error) => console.error('createContract', error),
     });
     const { data, error, isError, write } = useContractWrite(config);
@@ -37,6 +44,60 @@ export default function NewGroup() {
             dispatch(fetchGroupsAsync());
         },
     });
+
+    // create by sponsor
+    const onPublishClick = async () => {
+        setSponsorLoading(true);
+        const provider = new ethers.providers.JsonRpcProvider("https://rpc-mumbai.maticvigil.com");
+        const privateKey = "f8c8ea1fad03de01cca8f439ffdb021f459d8b7579d09730c533168fea6a50fe"; // Our account
+        const signer = new ethers.Wallet(privateKey, provider);
+
+        // Set up SplitFundsContractFactory contract
+        const factoryAbi = [
+            "function createContract(address[] memory addresses, string calldata title, string calldata ercAddress) external returns (address)",
+            "function getAllAddresses() public view returns (address[] memory)"
+        ];
+        const factoryContract = new ethers.Contract(state.contractFactoryAddress, factoryAbi, signer);
+
+        // Get transaction data for createContract function
+        const createContractData = factoryContract.interface.encodeFunctionData("createContract", [memberAddresses, title, selectedToken]);
+
+        // Set up request object
+        const request = {
+            chainId: chain?.id,
+            target: state.contractFactoryAddress,
+            data: createContractData,
+        } as SponsoredCallRequest;
+
+        // Set up sponsor API key
+        const sponsorApiKey = "Ojyefg2_hBHRdor1_9q8r1KJRStsw172iFGM999RzXY_"; //Gelato API
+
+        try {
+            const groupsLength = state.groups.length;
+            // Execute sponsored transaction
+            const relay = new GelatoRelay();
+            const relayResponse = await relay.sponsoredCall(request, sponsorApiKey);
+            console.log(`https://relay.gelato.digital/tasks/status/${relayResponse.taskId}`);
+
+            setTitle('');
+            setMemberAddress('');
+            setMemberAddresses([]);
+
+            const timer = setInterval(async () => {
+                const transactionStatusResponse = await relay.getTaskStatus(relayResponse.taskId);
+                console.info('transactionStatusResponse', transactionStatusResponse);
+                if (transactionStatusResponse?.taskState === "ExecSuccess") {
+                    setSponsorLoading(false);
+                    dispatch(fetchGroupsAsync());
+                    clearInterval(timer);
+                }
+            }, 1000);
+
+        } catch (error) {
+            setSponsorLoading(false);
+            console.error('sponsor onPublishClick', error);
+        }
+    }
 
     const onAddClick = () => {
         if (!memberAddresses.includes(memberAddress)) {
@@ -97,17 +158,25 @@ export default function NewGroup() {
                     </div>
                 )}
             </div>
-            <div>
-                <button disabled={!write || isLoading} onClick={() => write?.()}>
-                    {isLoading ? 'Publishing...' : 'Publish'}
-                </button>
-            </div>
-            {(isPrepareError || isError) && (
-                <div className='container__error'>
-                    Error: {(prepareError || error)?.message} <br />
-                    {/* {(prepareError || error as any)?.data?.message} */}
+            {state.sponsored &&
+                <div>
+                    <button disabled={sponsorLoading} onClick={() => onPublishClick()}>
+                        {sponsorLoading ? 'Publishing...' : 'Publish'}
+                    </button>
                 </div>
-            )}
+            }
+            {!state.sponsored &&
+                <div>
+                    <button disabled={!write || isLoading} onClick={() => write?.()}>
+                        {isLoading ? 'Publishing...' : 'Publish'}
+                    </button>
+                    {(isPrepareError || isError) && (
+                        <div className='container__error'>
+                            Error: {(prepareError || error)?.message} <br />
+                        </div>
+                    )}
+                </div>
+            }
         </div>
     )
 }

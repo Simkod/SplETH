@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchUsersAsync, selectContractState, selectIsOwner } from '../../reducers/contractReducer';
+import { fetchUsersAsync, selectContractState } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 
 export default function AddUser() {
     const dispatch = useAppDispatch();
     const state = useAppSelector(selectContractState);
-
-    const isOwner = useAppSelector(selectIsOwner);
 
     const [newUserAddress, setNewUserAddress] = useState('');
 
@@ -36,35 +34,31 @@ export default function AddUser() {
     });
 
     return (
-        <>
-            {isOwner &&
-                <div>
-                    <div style={{ display: 'flex' }}>
-                        <input
-                            type='text'
-                            disabled={isLoading}
-                            value={newUserAddress}
-                            onChange={(e) => setNewUserAddress(state => e.target.value === '' || e.target.value.match(/^0x[a-fA-F0-9]{40}$/ig) ? e.target.value : state)}
-                            placeholder='Address'
-                            style={{ flexGrow: 1 }}
-                        />
-                        <button disabled={!write || isLoading} onClick={() => write?.()}>
-                            {isLoading ? 'Adding User...' : 'Add User'}
-                        </button>
+        <div>
+            <div style={{ display: 'flex' }}>
+                <input
+                    type='text'
+                    disabled={isLoading}
+                    value={newUserAddress}
+                    onChange={(e) => setNewUserAddress(state => e.target.value === '' || e.target.value.match(/^0x[a-fA-F0-9]{40}$/ig) ? e.target.value : state)}
+                    placeholder='Address'
+                    style={{ flexGrow: 1 }}
+                />
+                <button disabled={!write || isLoading} onClick={() => write?.()}>
+                    {isLoading ? 'Adding User...' : 'Add User'}
+                </button>
+            </div>
+            <div>
+                {isSuccess && (
+                    <div className='container__success'>
+                        Successfully added new user!
+                        <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
                     </div>
-                    <div>
-                        {isSuccess && (
-                            <div className='container__success'>
-                                Successfully added new user!
-                                <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
-                            </div>
-                        )}
-                        {(isPrepareError || isError) && (
-                            <div className='container__error'>Error: {(prepareError || error)?.message}</div>
-                        )}
-                    </div>
-                </div>
-            }
-        </>
+                )}
+                {(isPrepareError || isError) && (
+                    <div className='container__error'>Error: {(prepareError || error)?.message}</div>
+                )}
+            </div>
+        </div>
     )
 }

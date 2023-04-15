@@ -7,7 +7,7 @@ import {
     useWaitForTransaction,
 } from 'wagmi';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import { fetchBalanceAsync, fetchERCTokenInfoAsync, fetchUsersBalanceAsync, selectContractState } from '../../reducers/contractReducer';
+import { fetchBalanceAsync, fetchERCTokenMoreInfoAsync, fetchUsersBalanceAsync, selectContractState } from '../../reducers/contractReducer';
 import { isNumeric } from '../../utils';
 import Emoji from '../shared/Emoji';
 import _erc20ABI from '../../erc20.abi.json';
@@ -47,7 +47,7 @@ export default function Deposit() {
     } = useWaitForTransaction({
         hash: dataAllowance?.hash,
         onSuccess(data) {
-            dispatch(fetchERCTokenInfoAsync());
+            dispatch(fetchERCTokenMoreInfoAsync(state.erc20Token));
             setTimeout(() => resetAllowance(), 5000);
         },
         onError: (error) => console.error('increaseAllowance useWaitForTransaction', error),
@@ -84,7 +84,9 @@ export default function Deposit() {
         hash: dataDepositERC?.hash,
         onSuccess(data) {
             setAmount('');
-            dispatch(fetchERCTokenInfoAsync());
+            dispatch(fetchBalanceAsync());
+            dispatch(fetchUsersBalanceAsync());
+
             setTimeout(() => resetDepositERC(), 5000);
         }
     });

@@ -3,12 +3,14 @@
         "name": "Polygon Mainnet",
         "blockExplorer": "https://polygonscan.com",
         "contractFactoryAddress": "",
+        "sponsored": false,
         "erc20Tokens": []
     },
     "80001": {
         "name": "Mumbai Testnet",
         "blockExplorer": "https://mumbai.polygonscan.com",
         "contractFactoryAddress": "0x951ef4D16aF66149628183fC4717c391e725CaCa",
+        "sponsored": false,
         "erc20Tokens": [
             {
                 "address": "0x39FA91D0F0A5519957A4047a7d3aaAEf66295529",

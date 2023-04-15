@@ -195,10 +195,15 @@ library Math {
     /**
      * @notice Calculates sqrt(a), following the selected rounding direction.
      */
-    function sqrt(uint256 a, Rounding rounding) internal pure returns (uint256) {
+    function sqrt(
+        uint256 a,
+        Rounding rounding
+    ) internal pure returns (uint256) {
         unchecked {
             uint256 result = sqrt(a);
-            return result + (rounding == Rounding.Up && result * result < a ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && result * result < a ? 1 : 0);
         }
     }
 
@@ -248,10 +253,15 @@ library Math {
      * @dev Return the log in base 2, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log2(uint256 value, Rounding rounding) internal pure returns (uint256) {
+    function log2(
+        uint256 value,
+        Rounding rounding
+    ) internal pure returns (uint256) {
         unchecked {
             uint256 result = log2(value);
-            return result + (rounding == Rounding.Up && 1 << result < value ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && 1 << result < value ? 1 : 0);
         }
     }
 
@@ -262,31 +272,31 @@ library Math {
     function log10(uint256 value) internal pure returns (uint256) {
         uint256 result = 0;
         unchecked {
-            if (value >= 10**64) {
-                value /= 10**64;
+            if (value >= 10 ** 64) {
+                value /= 10 ** 64;
                 result += 64;
             }
-            if (value >= 10**32) {
-                value /= 10**32;
+            if (value >= 10 ** 32) {
+                value /= 10 ** 32;
                 result += 32;
             }
-            if (value >= 10**16) {
-                value /= 10**16;
+            if (value >= 10 ** 16) {
+                value /= 10 ** 16;
                 result += 16;
             }
-            if (value >= 10**8) {
-                value /= 10**8;
+            if (value >= 10 ** 8) {
+                value /= 10 ** 8;
                 result += 8;
             }
-            if (value >= 10**4) {
-                value /= 10**4;
+            if (value >= 10 ** 4) {
+                value /= 10 ** 4;
                 result += 4;
             }
-            if (value >= 10**2) {
-                value /= 10**2;
+            if (value >= 10 ** 2) {
+                value /= 10 ** 2;
                 result += 2;
             }
-            if (value >= 10**1) {
+            if (value >= 10 ** 1) {
                 result += 1;
             }
         }
@@ -297,10 +307,15 @@ library Math {
      * @dev Return the log in base 10, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log10(uint256 value, Rounding rounding) internal pure returns (uint256) {
+    function log10(
+        uint256 value,
+        Rounding rounding
+    ) internal pure returns (uint256) {
         unchecked {
             uint256 result = log10(value);
-            return result + (rounding == Rounding.Up && 10**result < value ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && 10 ** result < value ? 1 : 0);
         }
     }
 
@@ -340,15 +355,18 @@ library Math {
      * @dev Return the log in base 10, following the selected rounding direction, of a positive value.
      * Returns 0 if given 0.
      */
-    function log256(uint256 value, Rounding rounding) internal pure returns (uint256) {
+    function log256(
+        uint256 value,
+        Rounding rounding
+    ) internal pure returns (uint256) {
         unchecked {
             uint256 result = log256(value);
-            return result + (rounding == Rounding.Up && 1 << (result * 8) < value ? 1 : 0);
+            return
+                result +
+                (rounding == Rounding.Up && 1 << (result * 8) < value ? 1 : 0);
         }
     }
 }
-
-
 
 pragma solidity ^0.8.0;
 
@@ -396,7 +414,10 @@ library Strings {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
      */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+    function toHexString(
+        uint256 value,
+        uint256 length
+    ) internal pure returns (string memory) {
         bytes memory buffer = new bytes(2 * length + 2);
         buffer[0] = "0";
         buffer[1] = "x";
@@ -416,12 +437,11 @@ library Strings {
     }
 }
 
-
 pragma solidity ^0.8.0;
 
-    /**
-     * @author Ivan
-     */
+/**
+ * @author Ivan
+ */
 
 /**
  * @dev Provides information about the current execution context, including the
@@ -518,21 +538,32 @@ abstract contract Ownable is Context {
 }
 
 contract StringToAddress {
-    
-    function stringToAddress(string memory _address) public pure returns (address) {
+    function stringToAddress(
+        string memory _address
+    ) public pure returns (address) {
         string memory cleanAddress = remove0xPrefix(_address);
         bytes20 _addressBytes = parseHexStringToBytes20(cleanAddress);
         return address(_addressBytes);
     }
-    
-    function remove0xPrefix(string memory _hexString) internal pure returns (string memory) {
-        if (bytes(_hexString).length >= 2 && bytes(_hexString)[0] == '0' && (bytes(_hexString)[1] == 'x' || bytes(_hexString)[1] == 'X')) {
+
+    function remove0xPrefix(
+        string memory _hexString
+    ) internal pure returns (string memory) {
+        if (
+            bytes(_hexString).length >= 2 &&
+            bytes(_hexString)[0] == "0" &&
+            (bytes(_hexString)[1] == "x" || bytes(_hexString)[1] == "X")
+        ) {
             return substring(_hexString, 2, bytes(_hexString).length);
         }
         return _hexString;
     }
-    
-    function substring(string memory _str, uint256 _start, uint256 _end) internal pure returns (string memory) {
+
+    function substring(
+        string memory _str,
+        uint256 _start,
+        uint256 _end
+    ) internal pure returns (string memory) {
         bytes memory _strBytes = bytes(_str);
         bytes memory _result = new bytes(_end - _start);
         for (uint256 i = _start; i < _end; i++) {
@@ -541,7 +572,9 @@ contract StringToAddress {
         return string(_result);
     }
 
-    function parseHexStringToBytes20(string memory _hexString) internal pure returns (bytes20) {
+    function parseHexStringToBytes20(
+        string memory _hexString
+    ) internal pure returns (bytes20) {
         bytes memory _bytesString = bytes(_hexString);
         uint160 _parsedBytes = 0;
         for (uint256 i = 0; i < _bytesString.length; i += 2) {
@@ -567,102 +600,158 @@ contract StringToAddress {
     }
 }
 
-
 interface ISplitFundsContract {
-
     function deposit() external payable;
+
     function withdraw() external;
 }
 
 interface IERC20 {
     function totalSupply() external view returns (uint256);
+
     function balanceOf(address account) external view returns (uint256);
-    function transfer(address recipient, uint256 amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint256);
+
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
+
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256);
+
     function approve(address spender, uint256 amount) external returns (bool);
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 }
 
-
-contract SplitFundsContractImpl is ISplitFundsContract, Ownable, StringToAddress {
-
+contract SplitFundsContractImpl is
+    ISplitFundsContract,
+    Ownable,
+    StringToAddress
+{
     uint256 public balance = address(this).balance;
     uint256 public ercBalance;
     address public tokenAddress;
     address[] private userAddresses;
-    uint256 public transactionCount = 0 ;
+    uint256 public transactionCount = 0;
 
     string public titleWallet;
 
-     struct User {
+    struct User {
         uint256 balance;
         bool exists;
         uint256 ercBalance;
     }
 
+    enum TransactionType {
+        Deposit,
+        Spend,
+        Withdraw
+    }
+
+    struct Transaction {
+        uint256 timestamp;
+        TransactionType transactionType;
+        address from;
+        address to;
+        uint256 amount;
+        string information;
+    }
+
     uint256 public number;
-    
-    mapping(uint256 => string) public transactionInfo;
+
+    mapping(uint256 => Transaction) public transactionInfo;
     mapping(address => User) public users;
-    mapping(address =>  mapping(uint256 => string)) public transaction_details;
+    mapping(address => mapping(uint256 => string)) public transaction_details;
 
-    constructor(address[] memory initialUsers, string memory title, string memory _tokenAddress) {
-
-         titleWallet = title; 
-         users[tx.origin] = User({balance: 0, exists: true, ercBalance: 0});
-         userAddresses.push(tx.origin);
-         tokenAddress = stringToAddress(_tokenAddress);
-
+    constructor(
+        address[] memory initialUsers,
+        string memory title,
+        string memory _tokenAddress
+    ) {
+        titleWallet = title;
+        users[tx.origin] = User({balance: 0, exists: true, ercBalance: 0});
+        userAddresses.push(tx.origin);
+        tokenAddress = stringToAddress(_tokenAddress);
 
         for (uint256 i = 0; i < initialUsers.length; i++) {
-             users[initialUsers[i]] = User({balance: 0, exists: true, ercBalance: 0});
-             userAddresses.push(initialUsers[i]);
+            users[initialUsers[i]] = User({
+                balance: 0,
+                exists: true,
+                ercBalance: 0
+            });
+            userAddresses.push(initialUsers[i]);
         }
     }
 
-      modifier onlyAuthorized() {
+    modifier onlyAuthorized() {
         require(users[msg.sender].exists || owner() == msg.sender);
         _;
     }
 
-    function setTokenAddress(address _tokenAddress) external onlyOwner {
-    tokenAddress = _tokenAddress;
-}
+    function setTokenAddress(address _tokenAddress) external onlyAuthorized {
+        tokenAddress = _tokenAddress;
+    }
 
     function deposit() external payable override {
-
         require(users[msg.sender].exists, "User does not exist");
 
         users[msg.sender].balance += msg.value;
         balance += msg.value;
 
-
         transactionCount += 1;
 
-        transactionInfo[transactionCount] = string.concat("Deposit: ", Strings.toString(msg.value));
+        transactionInfo[transactionCount] = Transaction(
+            block.timestamp,
+            TransactionType.Deposit,
+            msg.sender,
+            address(this),
+            msg.value,
+            string.concat("Deposit: ", Strings.toString(msg.value), "Matic")
+        );
     }
 
-     function addUser(address userAddress) public onlyAuthorized {
+    function addUser(address userAddress) public onlyAuthorized {
         require(!users[userAddress].exists, "User already exists");
         users[userAddress] = User({balance: 0, exists: true, ercBalance: 0});
         userAddresses.push(userAddress);
     }
 
-    function depositERC(uint256 amount) external payable  {
-
+    function depositERC(uint256 amount) external payable {
         IERC20 token = IERC20(tokenAddress);
 
         require(users[msg.sender].exists, "User does not exist");
-        require(token.transferFrom(msg.sender, address(this), amount), "Tnx failed");
+        require(
+            token.transferFrom(msg.sender, address(this), amount),
+            "Tnx failed"
+        );
 
         users[msg.sender].ercBalance += amount;
         ercBalance += amount;
 
         transactionCount += 1;
-        transactionInfo[transactionCount] = string.concat("ERC Deposit: ", Strings.toString(amount));
+
+        transactionInfo[transactionCount] = Transaction(
+            block.timestamp,
+            TransactionType.Deposit,
+            msg.sender,
+            address(this),
+            amount,
+            string.concat("Deposit: ", Strings.toString(amount), "DERC")
+        );
     }
 
-    function spend(uint256 amount, address payable recipient, string calldata information) external  onlyAuthorized {
+    function spend(
+        uint256 amount,
+        address payable recipient,
+        string calldata information
+    ) external onlyAuthorized {
         require(amount > 0, "Amount must be greater than zero");
         require(amount <= balance, "Insufficient funds");
 
@@ -677,35 +766,56 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable, StringToAddress
             balance -= amountPerUser;
         }
 
-
         transactionCount += 1;
-        transactionInfo[transactionCount] = string.concat("Spend of : ", Strings.toString(amount));
 
+        transactionInfo[transactionCount] = Transaction(
+            block.timestamp,
+            TransactionType.Spend,
+            address(this),
+            recipient,
+            amount,
+            string.concat("Spend of : ", Strings.toString(amount), "Matic")
+        );
     }
 
-    function spendERC(uint256 amount, address payable recipient, string calldata information) external onlyAuthorized {
-    require(amount > 0, "Amount must be greater than zero");
-    require(tokenAddress != address(0), "Token address not set");
+    function spendERC(
+        uint256 amount,
+        address payable recipient,
+        string calldata information
+    ) external onlyAuthorized {
+        require(amount > 0, "Amount must be greater than zero");
+        require(tokenAddress != address(0), "Token address not set");
 
-    transaction_details[recipient][amount] = information;
+        transaction_details[recipient][amount] = information;
 
-    uint256 numUsers = userAddresses.length;
-    uint256 amountPerUser = amount / numUsers;
+        uint256 numUsers = userAddresses.length;
+        uint256 amountPerUser = amount / numUsers;
 
-    IERC20 token = IERC20(tokenAddress);
+        IERC20 token = IERC20(tokenAddress);
 
-    for (uint i = 0; i < numUsers; i++) {
-             users[userAddresses[i]].ercBalance -= amountPerUser;
-             token.transfer(recipient, amountPerUser);
-             ercBalance -= amountPerUser;
+        for (uint i = 0; i < numUsers; i++) {
+            users[userAddresses[i]].ercBalance -= amountPerUser;
+            token.transfer(recipient, amountPerUser);
+            ercBalance -= amountPerUser;
         }
 
-    transactionCount += 1;
-    transactionInfo[transactionCount] = string.concat("Spend of : ", Strings.toString(amount));
- }
+        transactionCount += 1;
+
+        transactionInfo[transactionCount] = Transaction(
+            block.timestamp,
+            TransactionType.Spend,
+            address(this),
+            recipient,
+            amount,
+            string.concat("Spend of : ", Strings.toString(amount), "DERC")
+        );
+    }
 
     function withdraw() external override onlyAuthorized {
-        require(users[msg.sender].balance > 0, "You have no balance to withdraw");
+        require(
+            users[msg.sender].balance > 0,
+            "You have no balance to withdraw"
+        );
 
         uint256 amount = users[msg.sender].balance;
         users[msg.sender].balance = 0;
@@ -714,12 +824,22 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable, StringToAddress
         payable(msg.sender).transfer(amount);
 
         transactionCount += 1;
-        transactionInfo[transactionCount] = string.concat("Withdraw of : ", Strings.toString(amount));
+
+        transactionInfo[transactionCount] = Transaction(
+            block.timestamp,
+            TransactionType.Withdraw,
+            address(this),
+            msg.sender,
+            amount,
+            string.concat("Withdraw of : ", Strings.toString(amount), "Matic")
+        );
     }
 
-
     function withdrawERC() external onlyAuthorized {
-        require(users[msg.sender].ercBalance > 0, "You have no balance to withdraw");
+        require(
+            users[msg.sender].ercBalance > 0,
+            "You have no balance to withdraw"
+        );
 
         uint256 amount = users[msg.sender].ercBalance;
         users[msg.sender].ercBalance = 0;
@@ -729,10 +849,20 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable, StringToAddress
         token.transfer(msg.sender, amount);
 
         transactionCount += 1;
-        transactionInfo[transactionCount] = string.concat("Spend of : ", Strings.toString(amount));
+
+        transactionInfo[transactionCount] = Transaction(
+            block.timestamp,
+            TransactionType.Withdraw,
+            address(this),
+            msg.sender,
+            amount,
+            string.concat("Spend of : ", Strings.toString(amount), "DERC")
+        );
     }
 
-  function getBalance(address _myAddress) external view returns (uint256, uint256) {
+    function getBalance(
+        address _myAddress
+    ) external view returns (uint256, uint256) {
         return (users[_myAddress].balance, users[_myAddress].ercBalance);
     }
 
@@ -741,22 +871,26 @@ contract SplitFundsContractImpl is ISplitFundsContract, Ownable, StringToAddress
     }
 }
 
-
 contract SplitFundsContractFactory {
-
     mapping(string => address) public contractAddr;
-    address[] allAddresses; 
+    address[] allAddresses;
 
-    function createContract(address[] memory addresses, string calldata title, string calldata ercAddress) external returns (address) {
-        SplitFundsContractImpl newContract = new SplitFundsContractImpl(addresses, title, ercAddress);
+    function createContract(
+        address[] memory addresses,
+        string calldata title,
+        string calldata ercAddress
+    ) external returns (address) {
+        SplitFundsContractImpl newContract = new SplitFundsContractImpl(
+            addresses,
+            title,
+            ercAddress
+        );
         contractAddr[title] = address(newContract);
         allAddresses.push(address(newContract));
         return contractAddr[title];
     }
 
     function getAllAddresses() public view returns (address[] memory) {
-    return allAddresses;
+        return allAddresses;
     }
-
-
 }

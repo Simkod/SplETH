@@ -128,49 +128,47 @@ export default function Deposit() {
     const allowance = state.erc20Token && ethers.utils.formatUnits(state.erc20Token.allowanceToSmartContract);
 
     return (
-        <>
-            <div className='container'>
-                <div className='container__title'>Deposit</div>
-                {!state.erc20Token?.allowanceToSmartContract.isZero() &&
-                    <div>
-                        You are allowed to deposit {allowance} {state.erc20Token?.symbol}
-                    </div>}
-                <div style={{ display: 'flex' }}>
-                    <input
-                        type='text'
-                        onChange={(e) => setAmount(state => e.target.value === '' || isNumeric(e.target.value) ? e.target.value : state)}
-                        placeholder='Amount'
-                        value={amount}
-                        style={{ flexGrow: 1 }}
-                    />
-                    {state.erc20Token?.allowanceToSmartContract.isZero() &&
-                        <button disabled={isLoadingAllowance || !writeAllowance || !amount} onClick={() => writeAllowance?.()}>
-                            {isLoadingAllowance ? 'Allowing...' : 'Allowance'}
-                        </button>}
-                    {!state.erc20Token?.allowanceToSmartContract.isZero() &&
-                        <button disabled={isLoadingDepositERC || !writeDepositERC || !amount} onClick={() => writeDepositERC?.()}>
-                            {isLoadingDepositERC ? 'Sending...' : 'Deposit'}
-                        </button>}
-                    {false &&
-                        <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
-                            {isLoading ? 'Sending...' : 'Deposit'}
-                        </button>}
-                </div>
+        <div className='container'>
+            <div className='container__title'>Deposit</div>
+            {state.erc20Token && !state.erc20Token.allowanceToSmartContract.isZero() &&
                 <div>
-                    {isSuccess && (
-                        <div className='container__success'>
-                            Successfully deposited {amount}
-                            <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
-                        </div>
-                    )}
-                    {(isPrepareError || isError) && (
-                        <div className='container__error'>
-                            Error: {(prepareError || error)?.message} <br />
-                            {/* {(prepareError || error as any)?.data?.message} */}
-                        </div>
-                    )}
-                </div>
+                    You are allowed to deposit {allowance} {state.erc20Token?.symbol}
+                </div>}
+            <div style={{ display: 'flex' }}>
+                <input
+                    type='text'
+                    onChange={(e) => setAmount(state => e.target.value === '' || isNumeric(e.target.value) ? e.target.value : state)}
+                    placeholder='Amount'
+                    value={amount}
+                    style={{ flexGrow: 1 }}
+                />
+                {state.erc20Token && state.erc20Token.allowanceToSmartContract.isZero() &&
+                    <button disabled={isLoadingAllowance || !writeAllowance || !amount} onClick={() => writeAllowance?.()}>
+                        {isLoadingAllowance ? 'Allowing...' : 'Allowance'}
+                    </button>}
+                {state.erc20Token && !state.erc20Token?.allowanceToSmartContract.isZero() &&
+                    <button disabled={isLoadingDepositERC || !writeDepositERC || !amount} onClick={() => writeDepositERC?.()}>
+                        {isLoadingDepositERC ? 'Sending...' : 'Deposit'}
+                    </button>}
+                {!state.erc20Token &&
+                    <button disabled={isLoading || !write || !amount} onClick={() => write?.()}>
+                        {isLoading ? 'Sending...' : 'Deposit'}
+                    </button>}
             </div>
-        </>
+            <div>
+                {isSuccess && (
+                    <div className='container__success'>
+                        Successfully deposited {amount}
+                        <a className='button' href={`https://mumbai.polygonscan.com/tx/${data?.hash}`} target='_blank'><Emoji symbol='🔗' /></a>
+                    </div>
+                )}
+                {(isPrepareError || isError) && (
+                    <div className='container__error'>
+                        Error: {(prepareError || error)?.message} <br />
+                        {/* {(prepareError || error as any)?.data?.message} */}
+                    </div>
+                )}
+            </div>
+        </div>
     )
 }

@@ -21,7 +21,7 @@ export abstract class ErcService {
             functionName: 'tokenAddress'
         }) as `0x${string}` | undefined);
 
-        return tokenAddress ? new ERCToken(tokenAddress) : null;
+        return tokenAddress && tokenAddress !== '0x0000000000000000000000000000000000000000' ? new ERCToken(tokenAddress) : null;
     }
 
     public static async loadMoreTokenInfo(state: ContractState, ercToken: ERCToken | null): Promise<ERCToken | null> {

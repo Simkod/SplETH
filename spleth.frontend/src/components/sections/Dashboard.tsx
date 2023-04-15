@@ -58,7 +58,7 @@ export default function Dashboard() {
                             <div className='dashboard__pin-title'>Your Balance</div>
                             <div className='dashboard__pin-balance' title={state.balanceWallet.toString()}>
                                 {Number(ethers.utils.formatUnits(state.balanceWallet)).toFixed(2)} &nbsp;
-                                {state.erc20Token?.symbol}
+                                {state.erc20Token ? state.erc20Token.symbol : 'MATIC'}
                             </div>
                         </>}
                 </div>
@@ -69,7 +69,7 @@ export default function Dashboard() {
                             <div className='dashboard__pin-title'>Smart Contract Balance</div>
                             <div className='dashboard__pin-balance' title={state.balanceGroup.toString()}>
                                 {Number(ethers.utils.formatUnits(state.balanceGroup)).toFixed(2)} &nbsp;
-                                {state.erc20Token?.symbol}
+                                {state.erc20Token ? state.erc20Token.symbol : 'MATIC'}
                             </div>
                         </>}
                 </div>

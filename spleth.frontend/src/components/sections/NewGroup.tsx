@@ -20,6 +20,7 @@ export default function NewGroup() {
     const [sponsorLoading, setSponsorLoading] = useState(false);
 
     const { chain } = useNetwork();
+    const selectedTokenRequest = selectedToken === 'matic' ? '' : selectedToken;
 
     // create by user wallet
     const {
@@ -30,8 +31,8 @@ export default function NewGroup() {
         address: state.contractFactoryAddress,
         abi: state.contractFactoryABI,
         functionName: 'createContract',
-        args: [memberAddresses.filter(p => p != walletAddress), title, selectedToken],
-        enabled: !state.sponsored && !!(memberAddresses.length && title && selectedToken),
+        args: [memberAddresses.filter(p => p != walletAddress), title, selectedTokenRequest],
+        enabled: !state.sponsored && !!(memberAddresses.length && title),
         onError: (error) => console.error('createContract', error),
     });
     const { data, error, isError, write } = useContractWrite(config);
@@ -60,7 +61,7 @@ export default function NewGroup() {
         const factoryContract = new ethers.Contract(state.contractFactoryAddress, factoryAbi, signer);
 
         // Get transaction data for createContract function
-        const createContractData = factoryContract.interface.encodeFunctionData("createContract", [memberAddresses, title, selectedToken]);
+        const createContractData = factoryContract.interface.encodeFunctionData("createContract", [memberAddresses, title, selectedTokenRequest]);
 
         // Set up request object
         const request = {
@@ -128,6 +129,7 @@ export default function NewGroup() {
                     style={{ flexGrow: 1 }}
                 >
                     <option disabled hidden value="">Select token</option>
+                    <option value="matic">Native network token (MATIC)</option>
                     {state.erc20Tokens.map(token =>
                         <option key={token.address} value={token.address}>{token.title} ({token.symbol})</option>)}
                 </select>

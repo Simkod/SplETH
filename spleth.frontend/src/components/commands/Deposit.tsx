@@ -84,6 +84,7 @@ export default function Deposit() {
         hash: dataDepositERC?.hash,
         onSuccess(data) {
             setAmount('');
+            dispatch(fetchERCTokenMoreInfoAsync(state.erc20Token));
             dispatch(fetchBalanceAsync());
             dispatch(fetchUsersBalanceAsync());
 

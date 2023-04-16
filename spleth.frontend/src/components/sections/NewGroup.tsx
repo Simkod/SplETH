@@ -9,6 +9,7 @@ import { ethers } from 'ethers';
 
 export default function NewGroup() {
     const { address: walletAddress } = useAccount();
+    const { chain } = useNetwork();
 
     const dispatch = useAppDispatch();
     const state = useAppSelector(selectContractState);
@@ -19,7 +20,6 @@ export default function NewGroup() {
     const [memberAddresses, setMemberAddresses] = useState<string[]>([walletAddress as string]);
     const [sponsorLoading, setSponsorLoading] = useState(false);
 
-    const { chain } = useNetwork();
     const selectedTokenRequest = selectedToken === 'matic' ? '' : selectedToken;
 
     // create by user wallet
@@ -31,7 +31,7 @@ export default function NewGroup() {
         address: state.contractFactoryAddress,
         abi: state.contractFactoryABI,
         functionName: 'createContract',
-        args: [memberAddresses.filter(p => p != walletAddress), title, selectedTokenRequest],
+        args: [memberAddresses, title, selectedTokenRequest, walletAddress],
         enabled: !state.sponsored && !!(memberAddresses.length && title),
         onError: (error) => console.error('createContract', error),
     });
@@ -43,6 +43,7 @@ export default function NewGroup() {
             setMemberAddress('');
             setMemberAddresses([]);
             dispatch(fetchGroupsAsync());
+            console.log('created group', data);
         },
     });
 
@@ -55,13 +56,13 @@ export default function NewGroup() {
 
         // Set up SplitFundsContractFactory contract
         const factoryAbi = [
-            "function createContract(address[] memory addresses, string calldata title, string calldata ercAddress) external returns (address)",
+            "function createContract(address[] memory addresses, string calldata title, string calldata ercAddress, address owner) external returns (address)",
             "function getAllAddresses() public view returns (address[] memory)"
         ];
         const factoryContract = new ethers.Contract(state.contractFactoryAddress, factoryAbi, signer);
 
         // Get transaction data for createContract function
-        const createContractData = factoryContract.interface.encodeFunctionData("createContract", [memberAddresses, title, selectedTokenRequest]);
+        const createContractData = factoryContract.interface.encodeFunctionData("createContract", [memberAddresses, title, selectedTokenRequest, walletAddress]);
 
         // Set up request object
         const request = {

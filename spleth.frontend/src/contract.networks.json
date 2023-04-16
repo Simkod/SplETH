@@ -9,7 +9,7 @@
     "80001": {
         "name": "Mumbai Testnet",
         "blockExplorer": "https://mumbai.polygonscan.com",
-        "contractFactoryAddress": "0xa46C3583c871E206AEb7691580d0248d309F2d36",
+        "contractFactoryAddress": "0xa1853c1Dba75A10959d43091D8D140b70b7cF0cD",
         "sponsored": true,
         "erc20Tokens": [
             {

@@ -489,7 +489,7 @@ abstract contract Ownable is Context {
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
     constructor() {
-        _transferOwnership(tx.origin);
+        _transferOwnership(msg.sender);
     }
 
     /**
@@ -639,7 +639,7 @@ contract SplitFundsContractImpl is
     uint256 public ercBalance;
     address public tokenAddress;
     address[] private userAddresses;
-    uint256 public transactionCount = 0;
+    Transaction[] public transactionInfo;
 
     string public titleWallet;
 
@@ -664,20 +664,17 @@ contract SplitFundsContractImpl is
         string information;
     }
 
-    uint256 public number;
-
-    mapping(uint256 => Transaction) public transactionInfo;
     mapping(address => User) public users;
-    mapping(address => mapping(uint256 => string)) public transaction_details;
 
     constructor(
         address[] memory initialUsers,
         string memory title,
-        string memory _tokenAddress
+        string memory _tokenAddress,
+        address owner
     ) {
+        transferOwnership(owner);
         titleWallet = title;
         users[tx.origin] = User({balance: 0, exists: true, ercBalance: 0});
-        userAddresses.push(tx.origin);
         tokenAddress = stringToAddress(_tokenAddress);
 
         for (uint256 i = 0; i < initialUsers.length; i++) {
@@ -705,16 +702,16 @@ contract SplitFundsContractImpl is
         users[msg.sender].balance += msg.value;
         balance += msg.value;
 
-        transactionCount += 1;
+        Transaction memory newTransaction = Transaction({
+            timestamp: block.timestamp,
+            transactionType: TransactionType.Deposit,
+            from: msg.sender,
+            to: address(this),
+            amount: msg.value,
+            information: ""
+        });
 
-        transactionInfo[transactionCount] = Transaction(
-            block.timestamp,
-            TransactionType.Deposit,
-            msg.sender,
-            address(this),
-            msg.value,
-            string.concat("Deposit: ", Strings.toString(msg.value), "Matic")
-        );
+        transactionInfo.push(newTransaction);
     }
 
     function addUser(address userAddress) public onlyAuthorized {
@@ -735,16 +732,16 @@ contract SplitFundsContractImpl is
         users[msg.sender].ercBalance += amount;
         ercBalance += amount;
 
-        transactionCount += 1;
+        Transaction memory newTransaction = Transaction({
+            timestamp: block.timestamp,
+            transactionType: TransactionType.Deposit,
+            from: msg.sender,
+            to: address(this),
+            amount: amount,
+            information: ""
+        });
 
-        transactionInfo[transactionCount] = Transaction(
-            block.timestamp,
-            TransactionType.Deposit,
-            msg.sender,
-            address(this),
-            amount,
-            string.concat("Deposit: ", Strings.toString(amount), "DERC")
-        );
+        transactionInfo.push(newTransaction);
     }
 
     function spend(
@@ -755,8 +752,6 @@ contract SplitFundsContractImpl is
         require(amount > 0, "Amount must be greater than zero");
         require(amount <= balance, "Insufficient funds");
 
-        transaction_details[recipient][amount] = information;
-
         uint256 numUsers = userAddresses.length;
         uint256 amountPerUser = amount / numUsers;
 
@@ -766,16 +761,16 @@ contract SplitFundsContractImpl is
             balance -= amountPerUser;
         }
 
-        transactionCount += 1;
+        Transaction memory newTransaction = Transaction({
+            timestamp: block.timestamp,
+            transactionType: TransactionType.Spend,
+            from: address(this),
+            to: recipient,
+            amount: amount,
+            information: information
+        });
 
-        transactionInfo[transactionCount] = Transaction(
-            block.timestamp,
-            TransactionType.Spend,
-            address(this),
-            recipient,
-            amount,
-            string.concat("Spend of : ", Strings.toString(amount), "Matic")
-        );
+        transactionInfo.push(newTransaction);
     }
 
     function spendERC(
@@ -785,8 +780,6 @@ contract SplitFundsContractImpl is
     ) external onlyAuthorized {
         require(amount > 0, "Amount must be greater than zero");
         require(tokenAddress != address(0), "Token address not set");
-
-        transaction_details[recipient][amount] = information;
 
         uint256 numUsers = userAddresses.length;
         uint256 amountPerUser = amount / numUsers;
@@ -799,16 +792,16 @@ contract SplitFundsContractImpl is
             ercBalance -= amountPerUser;
         }
 
-        transactionCount += 1;
+        Transaction memory newTransaction = Transaction({
+            timestamp: block.timestamp,
+            transactionType: TransactionType.Spend,
+            from: address(this),
+            to: recipient,
+            amount: amount,
+            information: information
+        });
 
-        transactionInfo[transactionCount] = Transaction(
-            block.timestamp,
-            TransactionType.Spend,
-            address(this),
-            recipient,
-            amount,
-            string.concat("Spend of : ", Strings.toString(amount), "DERC")
-        );
+        transactionInfo.push(newTransaction);
     }
 
     function withdraw() external override onlyAuthorized {
@@ -823,16 +816,16 @@ contract SplitFundsContractImpl is
 
         payable(msg.sender).transfer(amount);
 
-        transactionCount += 1;
+        Transaction memory newTransaction = Transaction({
+            timestamp: block.timestamp,
+            transactionType: TransactionType.Withdraw,
+            from: address(this),
+            to: msg.sender,
+            amount: amount,
+            information: ""
+        });
 
-        transactionInfo[transactionCount] = Transaction(
-            block.timestamp,
-            TransactionType.Withdraw,
-            address(this),
-            msg.sender,
-            amount,
-            string.concat("Withdraw of : ", Strings.toString(amount), "Matic")
-        );
+        transactionInfo.push(newTransaction);
     }
 
     function withdrawERC() external onlyAuthorized {
@@ -848,16 +841,16 @@ contract SplitFundsContractImpl is
         IERC20 token = IERC20(tokenAddress);
         token.transfer(msg.sender, amount);
 
-        transactionCount += 1;
+        Transaction memory newTransaction = Transaction({
+            timestamp: block.timestamp,
+            transactionType: TransactionType.Withdraw,
+            from: address(this),
+            to: msg.sender,
+            amount: amount,
+            information: ""
+        });
 
-        transactionInfo[transactionCount] = Transaction(
-            block.timestamp,
-            TransactionType.Withdraw,
-            address(this),
-            msg.sender,
-            amount,
-            string.concat("Spend of : ", Strings.toString(amount), "DERC")
-        );
+        transactionInfo.push(newTransaction);
     }
 
     function getBalance(
@@ -872,22 +865,22 @@ contract SplitFundsContractImpl is
 }
 
 contract SplitFundsContractFactory {
-    mapping(string => address) public contractAddr;
     address[] allAddresses;
 
     function createContract(
         address[] memory addresses,
         string calldata title,
-        string calldata ercAddress
+        string calldata ercAddress,
+        address owner
     ) external returns (address) {
         SplitFundsContractImpl newContract = new SplitFundsContractImpl(
             addresses,
             title,
-            ercAddress
+            ercAddress,
+            owner
         );
-        contractAddr[title] = address(newContract);
         allAddresses.push(address(newContract));
-        return contractAddr[title];
+        return address(newContract);
     }
 
     function getAllAddresses() public view returns (address[] memory) {

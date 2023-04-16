@@ -34,6 +34,11 @@
                 "internalType": "string",
                 "name": "ercAddress",
                 "type": "string"
+            },
+            {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
             }
         ],
         "name": "createContract",

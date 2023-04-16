@@ -1,12 +1,13 @@
 import { AssetTransfersCategory, AssetTransfersResult } from 'alchemy-sdk';
 import { useEffect, useState } from 'react'
-import { useAppSelector } from '../../app/hooks';
-import { selectContractState } from '../../reducers/contractReducer';
+import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { selectContractState, setNeedFetchTransactionAction } from '../../reducers/contractReducer';
 import Emoji from '../shared/Emoji';
 import Loader from '../shared/Loader';
 import './Transactions.css';
 
 export default function Transactions() {
+    const dispatch = useAppDispatch();
     const state = useAppSelector(selectContractState);
 
     const [isFetchingTransfers, setIsFetchingTransfers] = useState<boolean>(false);
@@ -29,10 +30,13 @@ export default function Transactions() {
                 console.error('alchemy.core.getAssetTransfers', error);
             }
             setIsFetchingTransfers(false);
+            dispatch(setNeedFetchTransactionAction(false));
         };
 
-        getTransactions();
-    }, [state.group?.address]);
+        if (state.needFetchTransaction) {
+            getTransactions();
+        }
+    }, [state.needFetchTransaction]);
 
     return (
         <div className='container transactions'>
